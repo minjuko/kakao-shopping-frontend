@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 const Card = ({ to, children, className = "" }) => {
     return (
         <Link
-            className={`block w-full rounded-md border border-gray-200 bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-yellow-400 ${className}`}
+            className={`group block w-full overflow-hidden rounded-2xl border border-black/5 bg-white p-3 shadow-sm transition duration-200 hover:-translate-y-1 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:ring-offset-2 ${className}`}
             to={to}
         >
             {children}

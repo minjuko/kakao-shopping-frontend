@@ -73,6 +73,22 @@ const CartList = () => {
     setCartItems((prev) => updateCartItemQuantity(prev, cartId, 0));
   };
 
+  const handleOrder = () => {
+    setFeedbackMessage("");
+
+    if (updatePayload.length === 0) {
+      navigate(staticServerUri + "/order");
+      return;
+    }
+
+    mutate(updatePayload, {
+      onSuccess: async () => {
+        await queryClient.invalidateQueries(queryKeys.cart);
+        navigate(staticServerUri + "/order");
+      },
+    });
+  };
+
   if (isLoading) {
     return <Loader />;
   }
@@ -123,15 +139,7 @@ const CartList = () => {
       
       <Button
         className="mt-6 w-full rounded-md bg-yellow-300 p-3 text-center font-bold"
-        onClick={() => {
-          setFeedbackMessage("");
-          mutate(updatePayload, {
-            onSuccess: async () => {
-              await queryClient.invalidateQueries(queryKeys.cart);
-              navigate(staticServerUri + "/order");
-            },
-          });
-        }}
+        onClick={handleOrder}
       >
         <span>주문하기</span>
       </Button>

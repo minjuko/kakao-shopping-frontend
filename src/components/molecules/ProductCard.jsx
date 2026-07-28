@@ -9,8 +9,8 @@ const staticServerUri = process.env.REACT_APP_PATH || "";
 const ProductContainer = styled(Card)`
   display: flex;
   flex-direction: column;
-  align-items: center;
-  row-gap: 12px;
+  align-items: stretch;
+  row-gap: 16px;
 `;
 
 const ImageContainer = styled.div`
@@ -24,26 +24,26 @@ const ImageContainer = styled.div`
 const Title = styled.div`
   text-decoration: none;
   display: inline-block;
-  font-size: 1em;
-  color: black;
+  font-size: 0.95rem;
+  line-height: 1.45;
+  color: #333;
 `;
 
 const PriceText = styled.span`
   color: black;
   font-weight: bold;
-  font-size: 1.2em;
-  text-align: center;
+  font-size: 1.15rem;
 `;
 
 const ProductCard = ({ product }) => {
   return (
     <ProductContainer to={`${staticServerUri}/products/${product.id}`}>
       <ImageContainer>
-        <Photo src={`${staticServerUri}/assets${product.image}`} alt={product.productName} className="aspect-[4/3] w-full rounded-md object-cover" />
+        <Photo src={`${staticServerUri}/assets${product.image}`} alt={product.productName} className="aspect-[4/3] w-full rounded-xl object-cover transition duration-300 group-hover:scale-[1.02]" />
       </ImageContainer>
-      <div>
+      <div className="px-1 pb-1">
         <Title>{product.productName}</Title>
-        <br/>
+        <div className="h-2" />
         <PriceText>{comma(product.price)}원</PriceText>
         
       </div>

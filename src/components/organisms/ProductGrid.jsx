@@ -3,7 +3,7 @@ import ProductCard from '../molecules/ProductCard';
 
 const ProductGrid = ({ products = [] }) => {
   return (
-    <div className="mx-auto grid w-full max-w-[1200px] grid-cols-1 gap-4 px-4 py-6 sm:grid-cols-2 lg:grid-cols-3">
+    <div className="mx-auto grid w-full max-w-[1200px] grid-cols-1 gap-5 px-4 py-8 sm:grid-cols-2 sm:px-6 lg:grid-cols-3 lg:gap-6">
       {products.map((product) => (
         <ProductCard key={product.id} product={product} />
       ))}

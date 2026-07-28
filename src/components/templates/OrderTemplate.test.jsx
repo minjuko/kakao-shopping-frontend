@@ -32,8 +32,7 @@ const cartData = {
         {
           id: 10,
           quantity: 2,
-          price: 1000,
-          option: { optionName: "기본 옵션" },
+          option: { optionName: "기본 옵션", price: 1000 },
         },
       ],
     },
@@ -81,6 +80,53 @@ describe("OrderTemplate", () => {
 
     expect(screen.getByRole("alert")).toHaveTextContent("모든 항목에 동의해야 합니다.");
     expect(order).not.toHaveBeenCalled();
+  });
+
+  test("수량이 0인 옵션은 주문 상품에서 제외한다", async () => {
+    getCart.mockResolvedValue({
+      products: [
+        {
+          ...cartData.products[0],
+          carts: [
+            ...cartData.products[0].carts,
+            {
+              id: 11,
+              quantity: 0,
+              option: { optionName: "제외 옵션", price: 3000 },
+            },
+          ],
+        },
+      ],
+      totalPrice: 2000,
+    });
+
+    renderOrderTemplate();
+
+    expect(await screen.findByText("테스트 상품 기본 옵션")).toBeInTheDocument();
+    expect(screen.getAllByText("2,000원")).toHaveLength(2);
+    expect(screen.queryByText("테스트 상품 제외 옵션")).not.toBeInTheDocument();
+  });
+
+  test("주문 가능한 수량이 없으면 빈 상태를 표시한다", async () => {
+    getCart.mockResolvedValue({
+      products: [
+        {
+          ...cartData.products[0],
+          carts: [
+            {
+              ...cartData.products[0].carts[0],
+              quantity: 0,
+            },
+          ],
+        },
+      ],
+      totalPrice: 0,
+    });
+
+    renderOrderTemplate();
+
+    expect(await screen.findByText("주문할 상품이 없습니다.")).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "결제하기" })).not.toBeInTheDocument();
   });
 
   test("전체 동의 후 주문을 생성하고 주문 완료 페이지로 이동한다", async () => {

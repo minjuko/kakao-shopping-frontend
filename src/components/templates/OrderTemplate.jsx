@@ -16,6 +16,30 @@ const demoShippingAddress = {
   address: "서울특별시 강남구 테헤란로 000 (예시)",
 };
 
+const OrderItems = ({ products }) => (
+  <>
+    {products.flatMap((item) =>
+      item.carts
+        .filter((cart) => cart.quantity > 0)
+        .map((cart) => (
+          <div key={cart.id} className="border-t p-4">
+            <div className="product-name">
+              <span>
+                {`${item.productName} ${cart.option.optionName}`}
+              </span>
+            </div>
+            <div className="quantity">
+              <span>{comma(cart.quantity)}개</span>
+            </div>
+            <div className="price">
+              <span>{comma(cart.option.price * cart.quantity)}원</span>
+            </div>
+          </div>
+        ))
+    )}
+  </>
+);
+
 const OrderTemplate = () => {
   /**
    * 주문 대상 장바구니 조회 API 에러 캐칭 시나리오
@@ -25,6 +49,9 @@ const OrderTemplate = () => {
    */
   const { data, isLoading, isError } = useQuery(queryKeys.cart, getCart);
   const { products = [], totalPrice = 0 } = data ?? {};
+  const hasOrderItems = products.some((product) =>
+    product.carts.some((cart) => cart.quantity > 0)
+  );
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const handleApiError = useApiErrorHandler();
@@ -80,7 +107,7 @@ const OrderTemplate = () => {
     );
   }
 
-  if (products.length === 0) {
+  if (!hasOrderItems) {
     return (
       <QueryStatus
         title="주문할 상품이 없습니다."
@@ -88,27 +115,6 @@ const OrderTemplate = () => {
       />
     );
   }
-
-
-  const OrderItems = () => {
-    return products.flatMap((item) =>
-      item.carts.map((cart) => (
-        <div key={cart.id} className="p-4 border-t">
-          <div className="product-name">
-            <span>
-              {`${item.productName} ${cart.option.optionName}`}
-            </span>
-          </div>
-          <div className="quantity">
-            <span>{comma(cart.quantity)}개</span>
-          </div>
-          <div className="price">
-            <span>{comma(cart.price * cart.quantity)}원</span>
-          </div>
-        </div>
-      ))
-    );
-  };
 
   return (
     <div className="px-4 py-8">
@@ -142,7 +148,7 @@ const OrderTemplate = () => {
           <h2>주문상품 정보</h2>
         </div>
   
-        <OrderItems />
+        <OrderItems products={products} />
         <div className="border p-4 flex items-center justify-between">
           <h3>총 주문 금액</h3>
           <span className="price text-indigo-600 font-bold">
