@@ -1,5 +1,7 @@
+import { DEMO_MODE } from "../config/runtime";
+
 export const enableMocking = async () => {
-  if (process.env.REACT_APP_ENABLE_MOCKS !== "true") {
+  if (!DEMO_MODE) {
     return;
   }
 

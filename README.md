@@ -236,12 +236,6 @@ src
 npm ci
 ```
 
-프로젝트 루트에 `.env` 파일을 생성합니다.
-
-```env
-REACT_APP_ENABLE_MOCKS=true
-```
-
 개발 서버를 실행합니다.
 
 ```bash
@@ -249,6 +243,8 @@ npm start
 ```
 
 브라우저에서 `http://localhost:3000`으로 접속합니다.
+
+별도의 환경변수 설정 없이 MSW 데모 API가 기본으로 실행됩니다.
 
 ### 데모 로그인
 
