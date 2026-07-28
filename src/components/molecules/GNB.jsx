@@ -141,6 +141,8 @@ const GNB = () => {
           {user ? (
             <Link
               to={staticServerUri + "/"}
+              state={{ toastMessage: "로그아웃되었습니다." }}
+              replace
               className="rounded-full px-3 py-2 font-medium hover:bg-gray-100"
               onClick={handleLogOut}
             >

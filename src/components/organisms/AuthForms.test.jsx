@@ -87,7 +87,10 @@ describe("LoginForm", () => {
     });
     expect(store.getState().user.user).toBe("Bearer login-token");
     expect(JSON.parse(localStorage.getItem("user")).value).toBe("Bearer login-token");
-    expect(mockNavigate).toHaveBeenCalledWith("/");
+    expect(mockNavigate).toHaveBeenCalledWith("/", {
+      replace: true,
+      state: { toastMessage: "로그인되었습니다." },
+    });
   });
 
   test("제출 중 버튼을 비활성화해 중복 요청을 막는다", async () => {
@@ -108,7 +111,10 @@ describe("LoginForm", () => {
     expect(login).toHaveBeenCalledTimes(1);
 
     resolveLogin({ headers: { authorization: "Bearer login-token" } });
-    await waitFor(() => expect(mockNavigate).toHaveBeenCalledWith("/"));
+    await waitFor(() => expect(mockNavigate).toHaveBeenCalledWith("/", {
+      replace: true,
+      state: { toastMessage: "로그인되었습니다." },
+    }));
   });
 
   test("API 오류 메시지를 화면에 표시한다", async () => {
@@ -145,6 +151,9 @@ describe("RegisterForm", () => {
       password: "shopper1!",
       username: "홍길동",
     });
-    expect(mockNavigate).toHaveBeenCalledWith("/");
+    expect(mockNavigate).toHaveBeenCalledWith("/", {
+      replace: true,
+      state: { toastMessage: "회원가입이 완료되었습니다." },
+    });
   });
 });

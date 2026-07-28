@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import InputGroup from "../molecules/InputGroup";
 import useInput from "../../hooks/useInput";
-import LinkText from "../atoms/LinkText";
 import { login } from '../../services/user';
 import { useDispatch } from "react-redux";
 import { setUser } from "../../store/slices/userSlice";
 import { setAuthToken } from "../../utils/localStorage";
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Title from "../atoms/Title";
+import logoKakao from "../../assets/logoKakao.png";
 import {
     isValidAuthForm,
     validateAuthField,
@@ -72,7 +72,10 @@ const LoginForm = () => {
             const token = res.headers.authorization;
             dispatch(setUser({ user: token }));
             setAuthToken(token, 1000 * 60 * 60 * 24);
-            navigate(staticServerUri + "/");
+            navigate(staticServerUri + "/", {
+                replace: true,
+                state: { toastMessage: "로그인되었습니다." },
+            });
         } catch (err) {
             setError(err.response?.data?.error?.message ?? "로그인에 실패했습니다.");
         } finally {
@@ -83,18 +86,34 @@ const LoginForm = () => {
     const navigate = useNavigate();
 
     return (
-        <>
-            <main className="flex min-h-screen flex-col items-center justify-center bg-gray-50 px-4 py-10">
-                <div className="mb-7 text-center">
-                    <p className="mb-2 text-sm font-semibold text-yellow-600">KAKAO SHOPPING</p>
-                    <Title className="mb-2">로그인</Title>
-                    <p className="text-sm text-gray-500">쇼핑을 계속하려면 계정에 로그인하세요.</p>
+        <main className="flex min-h-screen flex-col items-center bg-white px-4 pb-8 pt-12 sm:pt-14">
+            <Link
+                to={staticServerUri + "/"}
+                className="mb-8"
+                aria-label="카카오 쇼핑하기 홈"
+            >
+                <img src={logoKakao} alt="쇼핑하기" className="h-10 w-auto" />
+            </Link>
+
+            <section className="w-full max-w-[460px] rounded-2xl border border-gray-300 bg-white px-6 py-8 sm:px-11 sm:py-9">
+                <div className="mb-8 text-center">
+                    <Title className="mb-3 text-[22px]">카카오계정으로 로그인</Title>
+                    <p className="text-sm leading-6 text-gray-500">
+                        카카오 쇼핑하기를 이용하려면 로그인해 주세요.
+                    </p>
                 </div>
-                <form className="w-full max-w-md rounded-2xl border border-black/5 bg-white p-6 shadow-lg sm:p-8" onSubmit={loginReq} noValidate>
+
+                <form onSubmit={loginReq} noValidate>
                     {process.env.REACT_APP_ENABLE_MOCKS === "true" && (
-                        <p className="mb-4 bg-yellow-50 p-2 text-sm" role="note">
-                            데모 모드에서는 형식에 맞는 이메일과 비밀번호로 로그인할 수 있습니다.
-                        </p>
+                        <div className="mb-6 rounded-lg bg-[#fffbea] px-4 py-3 text-[13px] leading-5 text-gray-600" role="note">
+                            <p>프론트엔드 데모 모드에서는 아래 예시 계정으로 로그인할 수 있습니다.</p>
+                            <dl className="mt-2 grid grid-cols-[64px_1fr] gap-x-2 font-medium text-gray-800">
+                                <dt>아이디</dt>
+                                <dd>test@test.com</dd>
+                                <dt>비밀번호</dt>
+                                <dd>test1234!</dd>
+                            </dl>
+                        </div>
                     )}
                     <InputGroup
                         id="email"
@@ -108,6 +127,7 @@ const LoginForm = () => {
                         invalid={invalidCheck}
                         autoComplete="email"
                         required
+                        inputClassName="h-14 rounded-lg border-gray-300 text-[15px] focus:border-gray-900 focus:ring-1 focus:ring-gray-900"
                     />
                     <InputGroup
                         id="password"
@@ -121,18 +141,36 @@ const LoginForm = () => {
                         invalid={invalidCheck}
                         autoComplete="current-password"
                         required
+                        inputClassName="h-14 rounded-lg border-gray-300 text-[15px] focus:border-gray-900 focus:ring-1 focus:ring-gray-900"
                     />
-                    {error && <p className="mb-4 border border-red-100 bg-red-50 p-2 text-red-600" role="alert">{error}</p>}
-                    <button className="h-12 w-full rounded-xl bg-yellow-300 font-bold hover:bg-yellow-400 disabled:cursor-not-allowed disabled:opacity-60" type="submit" disabled={isSubmitting}>
+                    {error && <p className="mb-5 rounded-lg border border-red-100 bg-red-50 px-4 py-3 text-sm text-red-600" role="alert">{error}</p>}
+                    <button
+                        className="h-14 w-full rounded-lg bg-[#fee500] text-[16px] font-semibold text-[#191919] transition hover:bg-[#f5dc00] focus:outline-none focus:ring-2 focus:ring-[#191919] focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60"
+                        type="submit"
+                        disabled={isSubmitting}
+                    >
                         {isSubmitting ? "로그인 중..." : "로그인"}
                     </button>
-					<div className="mt-5 text-center text-sm text-gray-600">
-                        아직 계정이 없나요?{" "}
-                        <LinkText to={staticServerUri + "/signup"} text="회원가입" />
+
+                    <div className="my-6 flex items-center gap-4" aria-hidden="true">
+                        <span className="h-px flex-1 bg-gray-200" />
+                        <span className="text-xs text-gray-400">또는</span>
+                        <span className="h-px flex-1 bg-gray-200" />
                     </div>
+
+                    <Link
+                        to={staticServerUri + "/signup"}
+                        className="flex h-14 w-full items-center justify-center rounded-lg border border-gray-300 bg-white text-[15px] font-semibold text-gray-800 transition hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2"
+                    >
+                        회원가입
+                    </Link>
                 </form>
-            </main>
-        </>
+            </section>
+
+            <p className="mt-6 text-center text-xs text-gray-400">
+                © Kakao Shopping Clone
+            </p>
+        </main>
     );
 };
 

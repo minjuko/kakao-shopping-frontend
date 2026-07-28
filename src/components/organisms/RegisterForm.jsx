@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import InputGroup from "../molecules/InputGroup";
 import useInput from "../../hooks/useInput";
-import LinkText from "../atoms/LinkText";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { register } from "../../services/user";
 import { useDispatch } from "react-redux";
 import { setUser } from "../../store/slices/userSlice";
 import { setAuthToken } from "../../utils/localStorage";
 import Title from "../atoms/Title";
+import logoKakao from "../../assets/logoKakao.png";
 import {
     isValidAuthForm,
     validateAuthField,
@@ -85,7 +85,10 @@ const RegisterForm = () => {
             const token = res.headers.authorization;
             dispatch(setUser({ user: token }));
             setAuthToken(token, 1000 * 60 * 60 * 24);
-            navigate(staticServerUri + "/");
+            navigate(staticServerUri + "/", {
+                replace: true,
+                state: { toastMessage: "회원가입이 완료되었습니다." },
+            });
         } catch (err) {
             setError(err.response?.data?.error?.message ?? "회원가입에 실패했습니다.");
         } finally {
@@ -96,14 +99,24 @@ const RegisterForm = () => {
 
     const navigate = useNavigate();
     return (
-        <>
-            <main className="flex min-h-screen flex-col items-center justify-center bg-gray-50 px-4 py-10">
+        <main className="flex min-h-screen flex-col items-center bg-white px-4 pb-8 pt-10 sm:pt-12">
+            <Link
+                to={staticServerUri + "/"}
+                className="mb-7"
+                aria-label="카카오 쇼핑하기 홈"
+            >
+                <img src={logoKakao} alt="쇼핑하기" className="h-10 w-auto" />
+            </Link>
+
+            <section className="w-full max-w-[460px] rounded-2xl border border-gray-300 bg-white px-6 py-8 sm:px-11 sm:py-9">
                 <div className="mb-7 text-center">
-                    <p className="mb-2 text-sm font-semibold text-yellow-600">KAKAO SHOPPING</p>
-                    <Title className="mb-2">회원가입</Title>
-                    <p className="text-sm text-gray-500">간단한 정보 입력으로 데모 쇼핑을 시작하세요.</p>
+                    <Title className="mb-3 text-[22px]">카카오 쇼핑 회원가입</Title>
+                    <p className="text-sm leading-6 text-gray-500">
+                        간단한 정보 입력으로 쇼핑을 시작해 보세요.
+                    </p>
                 </div>
-                <form className="w-full max-w-md rounded-2xl border border-black/5 bg-white p-6 shadow-lg sm:p-8" onSubmit={registerReq} noValidate>
+
+                <form onSubmit={registerReq} noValidate>
                     <InputGroup
                         id="email"
                         name="email"
@@ -116,6 +129,7 @@ const RegisterForm = () => {
                         invalid={invalidCheck}
                         autoComplete="email"
                         required
+                        inputClassName="h-14 rounded-lg border-gray-300 text-[15px] focus:border-gray-900 focus:ring-1 focus:ring-gray-900"
                     />
                     <InputGroup
                         id="username"
@@ -129,6 +143,7 @@ const RegisterForm = () => {
                         invalid={invalidCheck}
                         autoComplete="name"
                         required
+                        inputClassName="h-14 rounded-lg border-gray-300 text-[15px] focus:border-gray-900 focus:ring-1 focus:ring-gray-900"
                     />
                     <InputGroup
                         id="password"
@@ -142,6 +157,7 @@ const RegisterForm = () => {
                         invalid={invalidCheck}
                         autoComplete="new-password"
                         required
+                        inputClassName="h-14 rounded-lg border-gray-300 text-[15px] focus:border-gray-900 focus:ring-1 focus:ring-gray-900"
                     />
                     <InputGroup
                         id="passwordConfirm"
@@ -155,18 +171,36 @@ const RegisterForm = () => {
                         invalid={invalidCheck}
                         autoComplete="new-password"
                         required
+                        inputClassName="h-14 rounded-lg border-gray-300 text-[15px] focus:border-gray-900 focus:ring-1 focus:ring-gray-900"
                     />
-                    {error && <p className="mb-4 border border-red-100 bg-red-50 p-2 text-red-600" role="alert">{error}</p>}
-                    <button className="h-12 w-full rounded-xl bg-yellow-300 font-bold hover:bg-yellow-400 disabled:cursor-not-allowed disabled:opacity-60" type="submit" disabled={isSubmitting}>
+                    {error && <p className="mb-5 rounded-lg border border-red-100 bg-red-50 px-4 py-3 text-sm text-red-600" role="alert">{error}</p>}
+                    <button
+                        className="h-14 w-full rounded-lg bg-[#fee500] text-[16px] font-semibold text-[#191919] transition hover:bg-[#f5dc00] focus:outline-none focus:ring-2 focus:ring-[#191919] focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60"
+                        type="submit"
+                        disabled={isSubmitting}
+                    >
                         {isSubmitting ? "가입 중..." : "회원가입"}
                     </button>
-                    <div className="mt-5 text-center text-sm text-gray-600">
-                        이미 계정이 있나요?{" "}
-						 <LinkText to={staticServerUri + "/login"} text="로그인" />
+
+                    <div className="my-6 flex items-center gap-4" aria-hidden="true">
+                        <span className="h-px flex-1 bg-gray-200" />
+                        <span className="text-xs text-gray-400">또는</span>
+                        <span className="h-px flex-1 bg-gray-200" />
                     </div>
+
+                    <Link
+                        to={staticServerUri + "/login"}
+                        className="flex h-14 w-full items-center justify-center rounded-lg border border-gray-300 bg-white text-[15px] font-semibold text-gray-800 transition hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2"
+                    >
+                        로그인
+                    </Link>
                 </form>
-            </main>
-        </>
+            </section>
+
+            <p className="mt-6 text-center text-xs text-gray-400">
+                © Kakao Shopping Clone
+            </p>
+        </main>
     );
 };
 
