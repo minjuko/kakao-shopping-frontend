@@ -4,10 +4,25 @@ import { comma } from "../../utils/convert";
 import Counter from "./Counter";
 import Button from "./Button";
 
+const staticServerUri = process.env.REACT_APP_PATH || "";
+
 const CartItem = ({ item, onChange, onDelete }) => {
   return (
-    <Box className="mt-4 w-full rounded-2xl border border-black/5 bg-white p-4 shadow-sm sm:p-5">
-      <h5 className="mb-4 text-lg font-bold">{item.productName}</h5>
+    <Box className="w-full rounded-2xl border border-gray-200 bg-white p-3 shadow-md sm:p-4">
+      <div className="mb-4 flex items-center gap-4 border-b border-gray-100 pb-4">
+        {item.image && (
+          <img
+            src={`${staticServerUri}/assets${item.image}`}
+            alt=""
+            className="h-20 w-20 rounded-xl object-cover"
+          />
+        )}
+        <div className="min-w-0">
+          <p className="mb-1 text-xs font-semibold text-yellow-600">톡딜 상품</p>
+          <h2 className="font-bold leading-snug">{item.productName}</h2>
+          <p className="mt-1 text-xs font-medium text-gray-500">무료배송</p>
+        </div>
+      </div>
       {item.carts.map((cart) => (
           cart.quantity > 0 ? (
         <div key={cart.id} className="cart">
@@ -15,14 +30,6 @@ const CartItem = ({ item, onChange, onDelete }) => {
             <div className="option-name mb-3 font-medium">{cart.option.optionName}</div>
             <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
               <div className="flex flex-wrap items-center gap-2">
-                <Button
-                  className="rounded-lg border border-gray-300 bg-white px-3 py-1 text-sm text-gray-600 hover:border-red-300 hover:text-red-600"
-                  onClick={() => {
-                    onDelete(cart.id)
-                  }}
-                >
-                  삭제
-                </Button>
                 <Counter
                   initCount={cart.quantity}
                   onIncrease={(count) => {
@@ -32,8 +39,17 @@ const CartItem = ({ item, onChange, onDelete }) => {
                     onChange(cart.id, count);
                   }}
                 ></Counter>
+                <Button
+                  className="rounded-lg px-2 py-1 text-xs text-gray-500 underline underline-offset-2 hover:text-red-600"
+                  aria-label={`${cart.option.optionName} 삭제`}
+                  onClick={() => {
+                    onDelete(cart.id)
+                  }}
+                >
+                  삭제
+                </Button>
               </div>
-              <div className="price font-bold">
+              <div className="price pr-1 font-bold">
                 <span>{comma(cart.option.price * cart.quantity)}원</span>
               </div>
             </div>
@@ -42,9 +58,9 @@ const CartItem = ({ item, onChange, onDelete }) => {
           ):null
       ))}
       <div className="total-price">
-        <div className="row mt-4 flex w-auto justify-between border-t px-1 pt-4">
-          <h5 className="text-sm text-gray-600">상품 합계</h5>
-          <div className="price font-bold">
+        <div className="row mt-4 flex w-auto items-center justify-between border-t px-4 pt-4">
+          <h3 className="text-sm text-gray-600">상품 합계</h3>
+          <div className="price pr-1 font-bold">
             {comma(
               item.carts.reduce((acc, cur) => {
                 return acc + cur.option.price * cur.quantity;

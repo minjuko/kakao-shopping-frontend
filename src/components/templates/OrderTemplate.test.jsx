@@ -103,7 +103,7 @@ describe("OrderTemplate", () => {
     renderOrderTemplate();
 
     expect(await screen.findByText("테스트 상품 기본 옵션")).toBeInTheDocument();
-    expect(screen.getAllByText("2,000원")).toHaveLength(2);
+    expect(screen.getAllByText("2,000원")).toHaveLength(3);
     expect(screen.queryByText("테스트 상품 제외 옵션")).not.toBeInTheDocument();
   });
 

@@ -33,7 +33,13 @@ export const getMockCart = () => {
       }));
 
     return carts.length > 0
-      ? [{ id: product.id, productName: product.productName, carts }]
+      ? [{
+          id: product.id,
+          productName: product.productName,
+          image: product.image,
+          freeShipping: product.freeShipping,
+          carts,
+        }]
       : [];
   });
 

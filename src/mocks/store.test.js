@@ -6,10 +6,29 @@ import {
   saveMockOrder,
   updateMockCartItems,
 } from "./store";
+import { mockProducts } from "./data";
 
 beforeEach(() => resetMockData());
 
 describe("MSW 데모 상태", () => {
+  test("상품 응답에 가격, 리뷰, 배송 및 적립 혜택 정보를 포함한다", () => {
+    expect(mockProducts).toHaveLength(15);
+
+    mockProducts.forEach((product) => {
+      expect(product).toEqual(
+        expect.objectContaining({
+          originalPrice: expect.any(Number),
+          discountRate: expect.any(Number),
+          reviewCount: expect.any(Number),
+          freeShipping: expect.any(Boolean),
+          rewardPoint: expect.any(Number),
+          category: expect.any(String),
+        })
+      );
+      expect(product.originalPrice).toBeGreaterThan(product.price);
+    });
+  });
+
   test("상품 옵션을 장바구니에 추가하고 수량을 변경한다", () => {
     addMockCartItems([{ optionId: 101, quantity: 2 }]);
     const addedCart = getMockCart();

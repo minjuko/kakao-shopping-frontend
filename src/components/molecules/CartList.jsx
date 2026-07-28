@@ -113,41 +113,70 @@ const CartList = () => {
   }
 
   return (
-    <Container className="mx-auto w-full max-w-[960px] px-4 py-8 sm:px-6 lg:py-12">
-      <Box>
-        <Title>장바구니</Title>
-      </Box>
-      <div>
-        {Array.isArray(cartItems) &&
-          cartItems
-            .filter((item) => item.carts.some((cart) => cart.quantity > 0))
-            .map((item) => (
-              <CartItem
-                key={item.id}
-                item={item}
-                onChange={handleOnChangeCount}
-                onDelete={handleOnDeleteOption}
-              />
-            ))}
+    <Container className="mx-auto w-full max-w-[1200px] px-4 py-8 sm:px-6 lg:py-10">
+      <div className="mb-7 flex flex-wrap items-end justify-between gap-3">
+        <Box>
+          <Title className="mb-1">장바구니</Title>
+          <p className="text-sm text-gray-500">
+            옵션과 수량을 확인한 뒤 주문을 진행해주세요.
+          </p>
+        </Box>
+        <ol className="flex items-center gap-2 text-xs text-gray-400" aria-label="주문 단계">
+          <li className="font-bold text-gray-900">01 장바구니</li>
+          <li aria-hidden="true">›</li>
+          <li>02 주문·결제</li>
+          <li aria-hidden="true">›</li>
+          <li>03 완료</li>
+        </ol>
       </div>
-      <div className="mt-5 flex items-center justify-between rounded-2xl bg-gray-900 p-5 text-white shadow-sm">
-          <div className="text-sm text-gray-300">주문 예상 금액</div>
-          <div className="text-xl font-bold text-yellow-300">
-            {comma(calculateCartTotal(cartItems))}원
-          </div>
+
+      <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_340px] lg:gap-8">
+        <div className="space-y-4">
+          {Array.isArray(cartItems) &&
+            cartItems
+              .filter((item) => item.carts.some((cart) => cart.quantity > 0))
+              .map((item) => (
+                <CartItem
+                  key={item.id}
+                  item={item}
+                  onChange={handleOnChangeCount}
+                  onDelete={handleOnDeleteOption}
+                />
+              ))}
         </div>
-      
-      <Button
-        className="mt-4 h-14 w-full rounded-xl bg-yellow-300 p-3 text-center font-bold hover:bg-yellow-400"
-        onClick={handleOrder}
-      >
-        <span>주문하기</span>
-      </Button>
-      {feedbackMessage && (
-        <p className="mt-3 text-sm text-red-600" role="alert">
-          {feedbackMessage}
-        </p>
-      )}
+
+        <aside className="rounded-2xl border border-gray-200 bg-white p-5 shadow-md lg:sticky lg:top-24">
+          <h2 className="text-lg font-bold">결제 예정 금액</h2>
+          <dl className="mt-5 space-y-3 text-sm">
+            <div className="flex justify-between">
+              <dt className="text-gray-500">상품 금액</dt>
+              <dd>{comma(calculateCartTotal(cartItems))}원</dd>
+            </div>
+            <div className="flex justify-between">
+              <dt className="text-gray-500">배송비</dt>
+              <dd className="font-medium text-gray-700">무료배송</dd>
+            </div>
+          </dl>
+          <div className="mt-5 flex items-end justify-between border-t pt-5">
+            <span className="text-base font-bold">총 상품 금액</span>
+            <strong className="text-2xl">{comma(calculateCartTotal(cartItems))}원</strong>
+          </div>
+          <p className="mt-3 rounded-lg bg-yellow-50 p-3 text-xs text-gray-600">
+            카카오페이 결제 시 상품별 포인트 혜택을 받을 수 있습니다.
+          </p>
+          <Button
+            className="mt-4 h-14 w-full rounded-xl bg-yellow-300 p-3 text-center font-bold hover:bg-yellow-400"
+            onClick={handleOrder}
+          >
+            <span>{comma(calculateCartTotal(cartItems))}원 주문하기</span>
+          </Button>
+          {feedbackMessage && (
+            <p className="mt-3 text-sm text-red-600" role="alert">
+              {feedbackMessage}
+            </p>
+          )}
+        </aside>
+      </div>
     </Container>
   );
 };

@@ -7,8 +7,14 @@ const createOptions = (productId, options) =>
 export const mockProducts = [
   {
     id: 1,
+    category: "생활",
     productName: "기본에 크리스마스 슬라이딩 지퍼백",
     price: 12900,
+    originalPrice: 15900,
+    discountRate: 19,
+    reviewCount: 157,
+    freeShipping: true,
+    rewardPoint: 650,
     image: "/images/1.jpg",
     starCount: 5,
     options: createOptions(1, [
@@ -18,8 +24,14 @@ export const mockProducts = [
   },
   {
     id: 2,
+    category: "식품",
     productName: "황금약단밤 칼집 군밤",
     price: 10900,
+    originalPrice: 13900,
+    discountRate: 22,
+    reviewCount: 842,
+    freeShipping: true,
+    rewardPoint: 550,
     image: "/images/2.jpg",
     starCount: 5,
     options: createOptions(2, [
@@ -29,8 +41,14 @@ export const mockProducts = [
   },
   {
     id: 3,
+    category: "디지털",
     productName: "JBL 키즈 블루투스 헤드폰",
     price: 45900,
+    originalPrice: 59000,
+    discountRate: 22,
+    reviewCount: 316,
+    freeShipping: true,
+    rewardPoint: 2300,
     image: "/images/3.jpg",
     starCount: 4,
     options: createOptions(3, [
@@ -40,8 +58,14 @@ export const mockProducts = [
   },
   {
     id: 4,
+    category: "식품",
     productName: "바른 곡물효소 스틱",
     price: 19900,
+    originalPrice: 24900,
+    discountRate: 20,
+    reviewCount: 1204,
+    freeShipping: true,
+    rewardPoint: 1000,
     image: "/images/4.jpg",
     starCount: 4,
     options: createOptions(4, [
@@ -51,8 +75,14 @@ export const mockProducts = [
   },
   {
     id: 5,
+    category: "식품",
     productName: "쫄깃한 대왕 오징어 다리",
     price: 14900,
+    originalPrice: 18900,
+    discountRate: 21,
+    reviewCount: 729,
+    freeShipping: true,
+    rewardPoint: 750,
     image: "/images/5.jpg",
     starCount: 5,
     options: createOptions(5, [
@@ -62,8 +92,14 @@ export const mockProducts = [
   },
   {
     id: 6,
+    category: "식품",
     productName: "굳지 않는 앙금 가래떡 세트",
     price: 16900,
+    originalPrice: 21900,
+    discountRate: 23,
+    reviewCount: 988,
+    freeShipping: true,
+    rewardPoint: 850,
     image: "/images/6.jpg",
     starCount: 5,
     options: createOptions(6, [
@@ -73,8 +109,14 @@ export const mockProducts = [
   },
   {
     id: 7,
+    category: "식품",
     productName: "이너 딜리티 고식이섬유 티",
     price: 23900,
+    originalPrice: 29900,
+    discountRate: 20,
+    reviewCount: 264,
+    freeShipping: true,
+    rewardPoint: 1200,
     image: "/images/7.jpg",
     starCount: 4,
     options: createOptions(7, [
@@ -84,8 +126,14 @@ export const mockProducts = [
   },
   {
     id: 8,
+    category: "뷰티",
     productName: "제나벨 PDRN 리쥬비네이팅 크림",
     price: 32900,
+    originalPrice: 41900,
+    discountRate: 21,
+    reviewCount: 1738,
+    freeShipping: true,
+    rewardPoint: 1650,
     image: "/images/8.jpg",
     starCount: 5,
     options: createOptions(8, [
@@ -95,8 +143,14 @@ export const mockProducts = [
   },
   {
     id: 9,
+    category: "디지털",
     productName: "PlayStation VR2 호라이즌 번들",
     price: 688000,
+    originalPrice: 759000,
+    discountRate: 9,
+    reviewCount: 91,
+    freeShipping: true,
+    rewardPoint: 34400,
     image: "/images/9.jpg",
     starCount: 5,
     options: createOptions(9, [
@@ -106,8 +160,14 @@ export const mockProducts = [
   },
   {
     id: 10,
+    category: "식품",
     productName: "통영 홍가리비 산지직송",
     price: 18900,
+    originalPrice: 23900,
+    discountRate: 21,
+    reviewCount: 2156,
+    freeShipping: true,
+    rewardPoint: 950,
     image: "/images/10.jpg",
     starCount: 5,
     options: createOptions(10, [
@@ -117,8 +177,14 @@ export const mockProducts = [
   },
   {
     id: 11,
+    category: "식품",
     productName: "국산 궁채 장아찌",
     price: 9900,
+    originalPrice: 12900,
+    discountRate: 23,
+    reviewCount: 447,
+    freeShipping: true,
+    rewardPoint: 500,
     image: "/images/11.jpg",
     starCount: 4,
     options: createOptions(11, [
@@ -128,8 +194,14 @@ export const mockProducts = [
   },
   {
     id: 12,
+    category: "생활",
     productName: "깨끗한나라 순수소프트 화장지",
     price: 21900,
+    originalPrice: 27900,
+    discountRate: 22,
+    reviewCount: 3841,
+    freeShipping: true,
+    rewardPoint: 1100,
     image: "/images/12.jpg",
     starCount: 5,
     options: createOptions(12, [
@@ -139,8 +211,14 @@ export const mockProducts = [
   },
   {
     id: 13,
+    category: "생활",
     productName: "초미세모 칫솔 패밀리 세트",
     price: 13900,
+    originalPrice: 17900,
+    discountRate: 22,
+    reviewCount: 675,
+    freeShipping: true,
+    rewardPoint: 700,
     image: "/images/13.jpg",
     starCount: 4,
     options: createOptions(13, [
@@ -150,8 +228,14 @@ export const mockProducts = [
   },
   {
     id: 14,
+    category: "식품",
     productName: "고당도 샤인머스캣",
     price: 24900,
+    originalPrice: 31900,
+    discountRate: 22,
+    reviewCount: 1522,
+    freeShipping: true,
+    rewardPoint: 1250,
     image: "/images/14.jpg",
     starCount: 5,
     options: createOptions(14, [
@@ -161,8 +245,14 @@ export const mockProducts = [
   },
   {
     id: 15,
+    category: "디지털",
     productName: "일리 캡슐 커피머신 세트",
     price: 159000,
+    originalPrice: 189000,
+    discountRate: 16,
+    reviewCount: 238,
+    freeShipping: true,
+    rewardPoint: 7950,
     image: "/images/15.jpg",
     starCount: 5,
     options: createOptions(15, [

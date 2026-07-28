@@ -22,7 +22,7 @@ const OrderItems = ({ products }) => (
       item.carts
         .filter((cart) => cart.quantity > 0)
         .map((cart) => (
-          <div key={cart.id} className="rounded-xl bg-gray-50 p-4">
+          <div key={cart.id} className="rounded-xl border border-gray-200 bg-gray-50 p-4">
             <div className="product-name font-medium">
               <span>
                 {`${item.productName} ${cart.option.optionName}`}
@@ -117,83 +117,148 @@ const OrderTemplate = () => {
   }
 
   return (
-    <div className="px-4 py-8 sm:px-6 lg:py-12">
-      <div className="mx-auto block w-full max-w-[900px]">
-        <div className="mb-5">
-          <h1 className="text-2xl font-bold tracking-tight">주문하기</h1>
+    <div className="px-4 py-8 sm:px-6 lg:py-10">
+      <div className="mx-auto block w-full max-w-[1200px]">
+        <div className="mb-7 flex flex-wrap items-end justify-between gap-3">
+          <div>
+            <h1 className="text-2xl font-bold tracking-tight">주문·결제</h1>
+            <p className="mt-1 text-sm text-gray-500">
+              배송 정보와 결제 내용을 확인해주세요.
+            </p>
+          </div>
+          <ol className="flex items-center gap-2 text-xs text-gray-400" aria-label="주문 단계">
+            <li>01 장바구니</li>
+            <li aria-hidden="true">›</li>
+            <li className="font-bold text-gray-900">02 주문·결제</li>
+            <li aria-hidden="true">›</li>
+            <li>03 완료</li>
+          </ol>
         </div>
-        <section className="mb-4 rounded-2xl border border-black/5 bg-white p-5 shadow-sm sm:p-6" aria-labelledby="shipping-address-title">
+
+        <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_340px] lg:gap-8">
+          <div className="space-y-4">
+        <section className="rounded-2xl border border-gray-200 bg-white p-4 shadow-md" aria-labelledby="shipping-address-title">
           <div className="flex flex-wrap items-center gap-2">
             <h2 id="shipping-address-title" className="font-bold">
               배송지 정보
             </h2>
-            <span className="rounded-md bg-blue-100 p-1 text-xs text-blue-700">
+            <span className="rounded-md bg-yellow-100 px-2 py-1 text-xs font-medium text-yellow-800">
               예시 정보
             </span>
           </div>
-          <p className="mt-2 rounded bg-gray-100 p-3 text-sm text-gray-600">
+          <p className="mt-3 rounded-xl bg-gray-50 p-3 text-sm text-gray-600">
             예시 데이터를 표시합니다. 실제 주문이나 결제는 발생하지 않습니다.
           </p>
           <dl className="mt-4 grid gap-3 text-sm sm:grid-cols-[100px_1fr]">
-            <dt className="font-bold">받는 분</dt>
+            <dt className="text-gray-500">받는 분</dt>
             <dd>{demoShippingAddress.recipient}</dd>
-            <dt className="font-bold">연락처</dt>
+            <dt className="text-gray-500">연락처</dt>
             <dd>{demoShippingAddress.phone}</dd>
-            <dt className="font-bold">주소</dt>
+            <dt className="text-gray-500">주소</dt>
             <dd>{demoShippingAddress.address}</dd>
           </dl>
         </section>
 
-        <div className="rounded-t-2xl border border-b-0 border-black/5 bg-white px-5 pt-5 sm:px-6 sm:pt-6">
-          <h2 className="font-bold">주문상품 정보</h2>
-        </div>
+        <section className="rounded-2xl border border-gray-200 bg-white p-4 shadow-md" aria-labelledby="order-products-title">
+          <h2 id="order-products-title" className="font-bold">주문상품 정보</h2>
+          <div className="mt-4 space-y-3">
+            <OrderItems products={products} />
+          </div>
+        </section>
 
-        <div className="space-y-3 border-x border-black/5 bg-white p-5 sm:p-6">
-          <OrderItems products={products} />
-        </div>
-        <div className="mb-4 flex items-center justify-between rounded-b-2xl border border-t-0 border-black/5 bg-gray-900 p-5 text-white shadow-sm sm:px-6">
-          <h3 className="text-sm text-gray-300">총 주문 금액</h3>
-          <span className="price text-xl font-bold text-yellow-300">
-            {comma(totalPrice)}원
-          </span>
-        </div>
-        <div className="flex flex-col gap-4 rounded-2xl border border-black/5 bg-white p-5 shadow-sm sm:p-6">
-          <div className="flex gap-2">
+        <section className="rounded-2xl border border-gray-200 bg-white p-4 shadow-md" aria-labelledby="payment-method-title">
+          <h2 id="payment-method-title" className="font-bold">결제수단</h2>
+          <label className="mt-4 flex cursor-pointer items-center gap-3 rounded-xl border-2 border-yellow-300 bg-yellow-50 p-4">
             <input
+              type="radio"
+              name="payment-method"
+              value="kakaopay"
+              checked
+              readOnly
+              className="h-4 w-4 accent-yellow-400"
+            />
+            <span className="flex-1">
+              <strong className="block text-base">kakao<span className="font-black">pay</span></strong>
+              <span className="mt-1 block text-xs text-gray-500">
+                카카오페이 머니 또는 등록한 카드로 간편 결제
+              </span>
+            </span>
+            <span className="rounded-full bg-white px-2 py-1 text-xs font-semibold">
+              최대 1% 적립
+            </span>
+          </label>
+        </section>
+
+        <section className="flex flex-col gap-4 rounded-2xl border border-gray-200 bg-white p-4 shadow-md" aria-labelledby="agreement-title">
+          <h2 id="agreement-title" className="sr-only">주문 동의</h2>
+          <div className="flex items-center gap-3 border-b pb-4">
+            <input
+              className="h-5 w-5 accent-yellow-400"
               type="checkbox"
               id="all-agree"
               checked={agreePayment && agreePolicy}
               onChange={handleAllAgree}
             />
-            <label htmlFor="all-agree" className="text-xl font-bold">
+            <label htmlFor="all-agree" className="text-lg font-bold">
               전체 동의
             </label>
+            <span className="ml-auto text-xs text-gray-400">주문 내용을 확인했습니다.</span>
           </div>
-          <div className="flex gap-2">
+          <div className="flex items-center gap-3">
             <input
+              className="h-4 w-4 accent-yellow-400"
               type="checkbox"
               id="agree"
               name="payment-agree"
               checked={agreePayment}
               onChange={handleAgreement}
             />
-            <label htmlFor="agree" className="text-sm">
+            <label htmlFor="agree" className="text-sm text-gray-600">
               구매조건 확인 및 결제 진행 동의
             </label>
           </div>
-          <div className="flex gap-2">
+          <div className="flex items-center gap-3">
             <input
+              className="h-4 w-4 accent-yellow-400"
               type="checkbox"
               id="policy"
               name="policy-agree"
               checked={agreePolicy}
               onChange={handleAgreement}
             />
-            <label htmlFor="policy" className="text-sm">
+            <label htmlFor="policy" className="text-sm text-gray-600">
               개인정보 제 3자 제공 동의
             </label>
           </div>
+        </section>
+        </div>
+
+        <aside className="rounded-2xl border border-gray-200 bg-white p-5 shadow-md lg:sticky lg:top-24">
+          <h2 className="text-lg font-bold">최종 결제 금액</h2>
+          <dl className="mt-5 space-y-3 text-sm">
+            <div className="flex justify-between">
+              <dt className="text-gray-500">상품 금액</dt>
+              <dd>{comma(totalPrice)}원</dd>
+            </div>
+            <div className="flex justify-between">
+              <dt className="text-gray-500">배송비</dt>
+              <dd className="font-medium text-gray-700">무료배송</dd>
+            </div>
+            <div className="flex justify-between text-yellow-700">
+              <dt>카카오페이 예상 적립</dt>
+              <dd>결제 후 적립</dd>
+            </div>
+          </dl>
+          <div className="mt-5 flex items-end justify-between border-t pt-5">
+            <span className="text-base font-bold">총 상품 금액</span>
+            <strong className="text-2xl">{comma(totalPrice)}원</strong>
+          </div>
+          <p className="mt-3 rounded-lg bg-gray-50 p-3 text-xs leading-relaxed text-gray-500">
+            결제하기를 누르면 선택한 결제수단으로 주문이 진행됩니다. 데모 환경에서는 실제 결제가 발생하지 않습니다.
+          </p>
           <button
+            type="button"
+            aria-label="결제하기"
             onClick={() => {
               if (!agreePayment || !agreePolicy) {
                 setFeedbackMessage("모든 항목에 동의해야 합니다.");
@@ -210,17 +275,18 @@ const OrderTemplate = () => {
               });
             }}
             disabled={isOrdering}
-            className={`w-full rounded-xl p-4 font-bold ${
+            className={`mt-4 w-full rounded-xl p-4 font-bold ${
               agreePayment && agreePolicy && !isOrdering ? "bg-yellow-300 hover:bg-yellow-400" : "bg-gray-200 text-gray-500"
             }`}
           >
-            {isOrdering ? "결제 처리 중..." : "결제하기"}
+            {isOrdering ? "결제 처리 중..." : `${comma(totalPrice)}원 결제하기`}
           </button>
           {feedbackMessage && (
             <p className="text-sm text-red-600" role="alert">
               {feedbackMessage}
             </p>
           )}
+        </aside>
         </div>
       </div>
     </div>

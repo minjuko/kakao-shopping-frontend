@@ -7,11 +7,16 @@ import CardSkeleton from "../atoms/CardSkeleton";
 import { useInView } from "react-intersection-observer";
 import { queryKeys } from "../../services/queryKeys";
 import QueryStatus from "../atoms/QueryStatus";
+import { useSearchParams } from "react-router-dom";
 
 const MainProductTemplate = () => {
     const { ref, inView } = useInView({
       rootMargin: "240px 0px",
     });
+    const [searchParams] = useSearchParams();
+    const keyword = (searchParams.get("q") ?? "").trim().toLowerCase();
+    const selectedCategory = searchParams.get("category") ?? "전체";
+    const hasFilter = Boolean(keyword) || selectedCategory !== "전체";
 
     /**
      * 상품 목록 조회 API 에러 캐칭 시나리오
@@ -37,11 +42,37 @@ const MainProductTemplate = () => {
     }); 
 
     const productList = products?.pages.flat() ?? [];
+    const filteredProductList = productList.filter((product) => {
+      const matchesKeyword =
+        !keyword || product.productName.toLowerCase().includes(keyword);
+      const matchesCategory =
+        selectedCategory === "전체" || product.category === selectedCategory;
+      return matchesKeyword && matchesCategory;
+    });
     const hasLoadedProducts = productList.length > 0;
 
     useEffect(() => {
       if (
+        hasFilter &&
+        hasNextPage &&
+        !isFetchingNextPage &&
+        !isError
+      ) {
+        fetchNextPage();
+      }
+    }, [
+      fetchNextPage,
+      hasFilter,
+      hasNextPage,
+      isError,
+      isFetchingNextPage,
+      productList.length,
+    ]);
+
+    useEffect(() => {
+      if (
         inView &&
+        !hasFilter &&
         !isLoading &&
         !isFetchingNextPage &&
         !isError &&
@@ -51,6 +82,7 @@ const MainProductTemplate = () => {
       }
     }, [
       fetchNextPage,
+      hasFilter,
       hasNextPage,
       inView,
       isError,
@@ -75,8 +107,8 @@ const MainProductTemplate = () => {
     };
 
     return(
-        <Container className="mainproduct">
-            {isLoading ? <CardSkeleton /> : productList.length > 0 ? (
+        <Container>
+            {isLoading ? <CardSkeleton /> : filteredProductList.length > 0 ? (
               <>
                 <div className="mx-auto max-w-[1200px] px-4 pt-10 sm:px-6">
                   <p className="text-sm font-semibold text-yellow-600">오늘의 발견</p>
@@ -85,14 +117,21 @@ const MainProductTemplate = () => {
                       지금 인기 있는 상품
                     </h1>
                     <span className="text-sm text-gray-500">
-                      {productList.length}개 상품
+                      {filteredProductList.length}개 상품
                     </span>
                   </div>
                 </div>
-                <ProductGrid products={productList}/>
+                <ProductGrid products={filteredProductList}/>
               </>
+            ) : hasFilter && hasNextPage ? (
+              <div className="mx-auto max-w-[1200px] px-4 py-16 text-center text-sm text-gray-500 sm:px-6">
+                검색 가능한 상품을 확인하고 있습니다.
+              </div>
             ) : (
-              <QueryStatus title="등록된 상품이 없습니다." />
+              <QueryStatus
+                title={hasFilter ? "검색 결과가 없습니다." : "등록된 상품이 없습니다."}
+                message={hasFilter ? "다른 검색어나 카테고리를 선택해보세요." : undefined}
+              />
             )}
             <div ref={ref} className="h-1" aria-hidden="true"></div>
             {isFetchingNextPage && (

@@ -1,20 +1,31 @@
 import { configureStore } from "@reduxjs/toolkit";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { Provider } from "react-redux";
 import { MemoryRouter } from "react-router-dom";
 import userReducer from "../../store/slices/userSlice";
 import { setAuthToken } from "../../utils/localStorage";
 import GNB from "./GNB";
+import { getCart } from "../../services/cart";
+
+jest.mock("../../services/cart", () => ({
+  getCart: jest.fn(),
+}));
 
 const renderGNB = () => {
   const store = configureStore({ reducer: { user: userReducer } });
+  const queryClient = new QueryClient({
+    defaultOptions: { queries: { retry: false } },
+  });
   return {
     store,
     ...render(
       <Provider store={store}>
-        <MemoryRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-          <GNB />
-        </MemoryRouter>
+        <QueryClientProvider client={queryClient}>
+          <MemoryRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+            <GNB />
+          </MemoryRouter>
+        </QueryClientProvider>
       </Provider>
     ),
   };
@@ -22,6 +33,7 @@ const renderGNB = () => {
 
 describe("GNB", () => {
   beforeEach(() => localStorage.clear());
+  beforeEach(() => getCart.mockResolvedValue({ products: [] }));
 
   test("링크를 중첩하지 않고 주요 메뉴를 제공한다", () => {
     const { container } = renderGNB();
@@ -31,6 +43,8 @@ describe("GNB", () => {
     expect(screen.getByRole("link", { name: "장바구니" })).toHaveAttribute("href", "/cart");
     expect(screen.getByRole("link", { name: "로그인" })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "회원가입" })).toBeInTheDocument();
+    expect(screen.getByRole("search")).toBeInTheDocument();
+    expect(screen.getByRole("navigation", { name: "상품 카테고리" })).toBeInTheDocument();
     expect(container.querySelector("a a")).toBeNull();
   });
 

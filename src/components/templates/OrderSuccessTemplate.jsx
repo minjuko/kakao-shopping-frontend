@@ -53,18 +53,18 @@ const OrderSuccessTemplate = () => {
         <Title className="mb-2">주문이 완료되었습니다</Title>
         <p className="text-sm text-gray-500">주문번호 {orderId}</p>
       </div>
-      <Box className="rounded-2xl border border-black/5 bg-white p-5 shadow-sm sm:p-6">
+      <Box className="rounded-2xl border border-gray-200 bg-white p-5 shadow-md sm:p-6">
       <h2 className="mb-4 font-bold">주문상품 정보</h2>
       <div className="space-y-3">
         {data &&
           orderProducts.map((item) => {
             return (
-              <section key={item.productName} className="rounded-xl bg-gray-50 p-4">
+              <section key={item.productName} className="rounded-xl border border-gray-200 bg-gray-50 p-4 shadow-sm">
                 <h3 className="font-bold">{item.productName}</h3>
                 <div className="mt-3 grid gap-3 sm:grid-cols-2">
                   {item.items.map((option) => {
                     return (
-                      <div key={option.id} className="rounded-lg bg-white p-3 text-sm">
+                      <div key={option.id} className="rounded-lg border border-gray-200 bg-white p-3 text-sm">
                         <div className="font-medium">{option.optionName}</div>
                         <div className="mt-2 text-gray-500">수량 {option.quantity}개</div>
                         <div className="mt-1 font-bold">{comma(option.price)}원</div>
@@ -77,8 +77,8 @@ const OrderSuccessTemplate = () => {
           })}
       </div>
       <div className="mt-5 flex items-center justify-between border-t pt-5">
-        <span className="text-sm text-gray-600">총 주문 금액</span>
-        <strong className="text-xl">{comma(orderTotalPrice)}원</strong>
+        <span className="text-base font-bold">총 주문 금액</span>
+        <strong className="text-2xl">{comma(orderTotalPrice)}원</strong>
         </div>
         </Box>
         <Button

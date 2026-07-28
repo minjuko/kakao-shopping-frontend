@@ -110,8 +110,8 @@ const OptionColumn = ({ product }) => {
   );
 
   return (
-    <section className="flex w-full flex-col rounded-2xl border border-black/5 bg-white p-5 shadow-sm sm:p-6 lg:sticky lg:top-24 lg:self-start">
-      <h2 className="mb-4 text-xl font-bold">옵션 선택</h2>
+    <section className="flex w-full flex-col rounded-2xl border border-black/5 bg-white p-4 shadow-sm sm:p-5 lg:sticky lg:top-20 lg:self-start">
+      <h2 className="mb-3 text-lg font-bold">옵션 선택</h2>
       <OptionList
         options={product.options}
         onClick={handleOnClickOption}
@@ -119,19 +119,19 @@ const OptionColumn = ({ product }) => {
         selectedOptionIds={selectedOptions.map((option) => option.optionId)}
       />
 
-      <Container className="mt-5 rounded-xl bg-gray-50 p-4 text-sm text-gray-600">
-        <div className="mb-2 flex text-gray-800">
+      <Container className="mt-3 rounded-xl bg-gray-50 p-3 text-sm text-gray-600">
+        <div className="mb-1 flex text-gray-800">
           <span className="mr-1 font-bold">배송 방법</span><span>택배배송</span>
         </div>
         <span className="font-bold">배송비</span>
         <span className="ml-2 rounded-full bg-white px-2 py-1 text-xs font-medium text-gray-700">무료배송</span>
-        <p className="mt-2 text-xs">제주 추가 3,000원, 제주 외 도서지역 추가 6,000원</p>
+        <p className="mt-1 text-xs">제주 추가 3,000원, 제주 외 도서지역 추가 6,000원</p>
       </Container>
 
-      <Container className="mb-2 mt-5 w-full">
+      <Container className="mb-1 mt-3 w-full">
         <ol className="selected-option-list">
           {selectedOptions.map((option) => (
-            <li key={option.optionId} className="mb-2 w-full rounded-xl border border-gray-200 bg-gray-50 p-4">
+            <li key={option.optionId} className="mb-2 w-full rounded-xl border border-gray-200 bg-gray-50 p-3">
               <div className="flex items-start justify-between gap-3">
                 <div className="name">{option.name}</div>
                 <div className="flex items-center gap-3">
@@ -157,13 +157,13 @@ const OptionColumn = ({ product }) => {
       </Container>
 
       <Container className="w-full">
-        <div className="my-4 flex flex-wrap items-end justify-between gap-3 border-t pt-5">
+        <div className="my-3 flex flex-wrap items-end justify-between gap-2 border-t pt-4">
           <div className="text-sm text-gray-600">총 수량: {totalQuantity}개</div>
           <div><span className="mr-2 text-sm text-gray-600">총 상품금액</span><strong className="text-xl">{comma(totalPrice)}원</strong></div>
         </div>
       </Container>
 
-      <Container className="mt-3 flex w-full gap-2">
+      <Container className="mt-2 flex w-full gap-2">
         <Button
           className="h-12 flex-1 rounded-xl bg-gray-900 p-2 font-semibold text-white hover:bg-black disabled:cursor-not-allowed disabled:bg-gray-300"
           disabled={selectedOptions.length === 0 || isLoading}
