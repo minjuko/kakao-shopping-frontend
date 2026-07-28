@@ -86,17 +86,17 @@ const LoginForm = () => {
     const navigate = useNavigate();
 
     return (
-        <main className="flex min-h-screen flex-col items-center bg-white px-4 pb-8 pt-12 sm:pt-14">
+        <main className="flex min-h-screen flex-col items-center bg-white px-4 pb-4 pt-8 sm:pt-10">
             <Link
                 to={staticServerUri + "/"}
-                className="mb-8"
+                className="mb-6"
                 aria-label="카카오 쇼핑하기 홈"
             >
                 <img src={logoKakao} alt="쇼핑하기" className="h-10 w-auto" />
             </Link>
 
-            <section className="w-full max-w-[460px] rounded-2xl border border-gray-300 bg-white px-6 py-8 sm:px-11 sm:py-9">
-                <div className="mb-8 text-center">
+            <section className="w-full max-w-[460px] rounded-2xl border border-gray-300 bg-white px-6 py-7 sm:px-11 sm:py-8">
+                <div className="mb-6 text-center">
                     <Title className="mb-3 text-[22px]">카카오계정으로 로그인</Title>
                     <p className="text-sm leading-6 text-gray-500">
                         카카오 쇼핑하기를 이용하려면 로그인해 주세요.
@@ -127,7 +127,7 @@ const LoginForm = () => {
                         invalid={invalidCheck}
                         autoComplete="email"
                         required
-                        inputClassName="h-14 rounded-lg border-gray-300 text-[15px] focus:border-gray-900 focus:ring-1 focus:ring-gray-900"
+                        inputClassName="h-12 rounded-lg border-gray-300 text-[15px] focus:border-gray-900 focus:ring-1 focus:ring-gray-900"
                     />
                     <InputGroup
                         id="password"
@@ -141,11 +141,11 @@ const LoginForm = () => {
                         invalid={invalidCheck}
                         autoComplete="current-password"
                         required
-                        inputClassName="h-14 rounded-lg border-gray-300 text-[15px] focus:border-gray-900 focus:ring-1 focus:ring-gray-900"
+                        inputClassName="h-12 rounded-lg border-gray-300 text-[15px] focus:border-gray-900 focus:ring-1 focus:ring-gray-900"
                     />
                     {error && <p className="mb-5 rounded-lg border border-red-100 bg-red-50 px-4 py-3 text-sm text-red-600" role="alert">{error}</p>}
                     <button
-                        className="h-14 w-full rounded-lg bg-[#fee500] text-[16px] font-semibold text-[#191919] transition hover:bg-[#f5dc00] focus:outline-none focus:ring-2 focus:ring-[#191919] focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60"
+                        className="h-12 w-full rounded-lg bg-[#fee500] text-[16px] font-semibold text-[#191919] transition hover:bg-[#f5dc00] focus:outline-none focus:ring-2 focus:ring-[#191919] focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60"
                         type="submit"
                         disabled={isSubmitting}
                     >
@@ -154,14 +154,14 @@ const LoginForm = () => {
 
                     <Link
                         to={staticServerUri + "/signup"}
-                        className="mt-4 flex h-14 w-full items-center justify-center rounded-lg border border-gray-300 bg-white text-[15px] font-semibold text-gray-800 transition hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2"
+                        className="mt-4 flex h-12 w-full items-center justify-center rounded-lg border border-gray-300 bg-white text-[15px] font-semibold text-gray-800 transition hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2"
                     >
                         회원가입
                     </Link>
                 </form>
             </section>
 
-            <p className="mt-6 text-center text-xs text-gray-400">
+            <p className="mt-4 text-center text-xs text-gray-400">
                 © 2023 카카오테크캠퍼스 Frontend Clone Project
             </p>
         </main>
