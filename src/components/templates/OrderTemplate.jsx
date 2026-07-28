@@ -22,16 +22,16 @@ const OrderItems = ({ products }) => (
       item.carts
         .filter((cart) => cart.quantity > 0)
         .map((cart) => (
-          <div key={cart.id} className="border-t p-4">
-            <div className="product-name">
+          <div key={cart.id} className="rounded-xl bg-gray-50 p-4">
+            <div className="product-name font-medium">
               <span>
                 {`${item.productName} ${cart.option.optionName}`}
               </span>
             </div>
-            <div className="quantity">
+            <div className="quantity mt-2 text-sm text-gray-500">
               <span>{comma(cart.quantity)}개</span>
             </div>
-            <div className="price">
+            <div className="price mt-1 font-bold">
               <span>{comma(cart.option.price * cart.quantity)}원</span>
             </div>
           </div>
@@ -117,14 +117,14 @@ const OrderTemplate = () => {
   }
 
   return (
-    <div className="px-4 py-8">
-      <div className="mx-auto block w-full max-w-[1024px]">
-        <div className="border p-2">
-          <h1 className="text-md font-bold">주문하기</h1>
+    <div className="px-4 py-8 sm:px-6 lg:py-12">
+      <div className="mx-auto block w-full max-w-[900px]">
+        <div className="mb-5">
+          <h1 className="text-2xl font-bold tracking-tight">주문하기</h1>
         </div>
-        <section className="border p-4" aria-labelledby="shipping-address-title">
+        <section className="mb-4 rounded-2xl border border-black/5 bg-white p-5 shadow-sm sm:p-6" aria-labelledby="shipping-address-title">
           <div className="flex flex-wrap items-center gap-2">
-            <h2 id="shipping-address-title" className="text-md font-bold">
+            <h2 id="shipping-address-title" className="font-bold">
               배송지 정보
             </h2>
             <span className="rounded-md bg-blue-100 p-1 text-xs text-blue-700">
@@ -144,18 +144,20 @@ const OrderTemplate = () => {
           </dl>
         </section>
 
-        <div className="border p-4">
-          <h2>주문상품 정보</h2>
+        <div className="rounded-t-2xl border border-b-0 border-black/5 bg-white px-5 pt-5 sm:px-6 sm:pt-6">
+          <h2 className="font-bold">주문상품 정보</h2>
         </div>
-  
-        <OrderItems products={products} />
-        <div className="border p-4 flex items-center justify-between">
-          <h3>총 주문 금액</h3>
-          <span className="price text-indigo-600 font-bold">
+
+        <div className="space-y-3 border-x border-black/5 bg-white p-5 sm:p-6">
+          <OrderItems products={products} />
+        </div>
+        <div className="mb-4 flex items-center justify-between rounded-b-2xl border border-t-0 border-black/5 bg-gray-900 p-5 text-white shadow-sm sm:px-6">
+          <h3 className="text-sm text-gray-300">총 주문 금액</h3>
+          <span className="price text-xl font-bold text-yellow-300">
             {comma(totalPrice)}원
           </span>
         </div>
-        <div className="border flex flex-col p-4 gap-4">
+        <div className="flex flex-col gap-4 rounded-2xl border border-black/5 bg-white p-5 shadow-sm sm:p-6">
           <div className="flex gap-2">
             <input
               type="checkbox"
@@ -208,8 +210,8 @@ const OrderTemplate = () => {
               });
             }}
             disabled={isOrdering}
-            className={`w-full p-4 font-medium ${
-              agreePayment && agreePolicy && !isOrdering ? "bg-yellow-300" : "bg-gray-300"
+            className={`w-full rounded-xl p-4 font-bold ${
+              agreePayment && agreePolicy && !isOrdering ? "bg-yellow-300 hover:bg-yellow-400" : "bg-gray-200 text-gray-500"
             }`}
           >
             {isOrdering ? "결제 처리 중..." : "결제하기"}

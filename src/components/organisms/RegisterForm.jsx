@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import styled from "styled-components";
 import InputGroup from "../molecules/InputGroup";
 import useInput from "../../hooks/useInput";
 import LinkText from "../atoms/LinkText";
@@ -16,30 +15,6 @@ import {
 } from "../../utils/authValidation";
 
 const staticServerUri = process.env.REACT_APP_PATH || "";
-
-const Container = styled.main`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-`;
-
-const Form = styled.form`
-    border: 1px solid #c9c8c8;
-    padding: 2em;
-    margin-bottom: 1em;
-`;
-
-const Button = styled.button`
-    background-color: #fee500;
-    border-width: 0;
-    font-size: 1em;
-    border-radius: 0px;
-    width: 25em;
-    height: 3em;
-    cursor: ${(props) => (props.disabled ? "not-allowed" : "pointer")};
-    opacity: ${(props) => (props.disabled ? 0.6 : 1)};
-`;
 
 const RegisterForm = () => {
     const dispatch = useDispatch();
@@ -122,9 +97,13 @@ const RegisterForm = () => {
     const navigate = useNavigate();
     return (
         <>
-            <Container>
-                <Title>회원가입</Title>
-                <Form onSubmit={registerReq} noValidate>
+            <main className="flex min-h-screen flex-col items-center justify-center bg-gray-50 px-4 py-10">
+                <div className="mb-7 text-center">
+                    <p className="mb-2 text-sm font-semibold text-yellow-600">KAKAO SHOPPING</p>
+                    <Title className="mb-2">회원가입</Title>
+                    <p className="text-sm text-gray-500">간단한 정보 입력으로 데모 쇼핑을 시작하세요.</p>
+                </div>
+                <form className="w-full max-w-md rounded-2xl border border-black/5 bg-white p-6 shadow-lg sm:p-8" onSubmit={registerReq} noValidate>
                     <InputGroup
                         id="email"
                         name="email"
@@ -178,14 +157,15 @@ const RegisterForm = () => {
                         required
                     />
                     {error && <p className="mb-4 border border-red-100 bg-red-50 p-2 text-red-600" role="alert">{error}</p>}
-                    <Button type="submit" disabled={isSubmitting}>
+                    <button className="h-12 w-full rounded-xl bg-yellow-300 font-bold hover:bg-yellow-400 disabled:cursor-not-allowed disabled:opacity-60" type="submit" disabled={isSubmitting}>
                         {isSubmitting ? "가입 중..." : "회원가입"}
-                    </Button>
-                    <div className="text-0.8em mt-1.5em">
+                    </button>
+                    <div className="mt-5 text-center text-sm text-gray-600">
+                        이미 계정이 있나요?{" "}
 						 <LinkText to={staticServerUri + "/login"} text="로그인" />
                     </div>
-                </Form>
-            </Container>
+                </form>
+            </main>
         </>
     );
 };

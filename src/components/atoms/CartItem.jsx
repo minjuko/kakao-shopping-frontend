@@ -6,17 +6,17 @@ import Button from "./Button";
 
 const CartItem = ({ item, onChange, onDelete }) => {
   return (
-    <Box className="mt-4 w-full rounded border p-4">
-      <h5 className="font-bold mb-4">{item.productName}</h5>
+    <Box className="mt-4 w-full rounded-2xl border border-black/5 bg-white p-4 shadow-sm sm:p-5">
+      <h5 className="mb-4 text-lg font-bold">{item.productName}</h5>
       {item.carts.map((cart) => (
           cart.quantity > 0 ? (
         <div key={cart.id} className="cart">
-          <div className="option border p-4 my-4">
-            <div className="option-name">{cart.option.optionName}</div>
+          <div className="option my-3 rounded-xl bg-gray-50 p-4">
+            <div className="option-name mb-3 font-medium">{cart.option.optionName}</div>
             <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
               <div className="flex flex-wrap items-center gap-2">
                 <Button
-                  className="rounded border px-3 py-1"
+                  className="rounded-lg border border-gray-300 bg-white px-3 py-1 text-sm text-gray-600 hover:border-red-300 hover:text-red-600"
                   onClick={() => {
                     onDelete(cart.id)
                   }}
@@ -42,9 +42,9 @@ const CartItem = ({ item, onChange, onDelete }) => {
           ):null
       ))}
       <div className="total-price">
-        <div className="row border ml-0.5 mr-0.5 p-4 mt-4 w-auto flex justify-between">
-          <h5>주문금액</h5>
-          <div className="price text-blue-600">
+        <div className="row mt-4 flex w-auto justify-between border-t px-1 pt-4">
+          <h5 className="text-sm text-gray-600">상품 합계</h5>
+          <div className="price font-bold">
             {comma(
               item.carts.reduce((acc, cur) => {
                 return acc + cur.option.price * cur.quantity;

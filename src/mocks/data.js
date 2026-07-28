@@ -1,68 +1,173 @@
+const createOptions = (productId, options) =>
+  options.map((option, index) => ({
+    id: productId * 100 + index + 1,
+    ...option,
+  }));
+
 export const mockProducts = [
   {
     id: 1,
-    productName: "제주 감귤 선물 세트",
-    price: 18900,
+    productName: "기본에 크리스마스 슬라이딩 지퍼백",
+    price: 12900,
     image: "/images/1.jpg",
     starCount: 5,
-    options: [
-      { id: 101, optionName: "소과 2kg", price: 18900 },
-      { id: 102, optionName: "중과 3kg", price: 24900 },
-    ],
+    options: createOptions(1, [
+      { optionName: "중형 20매", price: 12900 },
+      { optionName: "대형 20매", price: 15900 },
+    ]),
   },
   {
     id: 2,
-    productName: "프리미엄 견과 세트",
-    price: 22900,
+    productName: "황금약단밤 칼집 군밤",
+    price: 10900,
     image: "/images/2.jpg",
-    starCount: 4,
-    options: [
-      { id: 201, optionName: "20개입", price: 22900 },
-      { id: 202, optionName: "30개입", price: 31900 },
-    ],
+    starCount: 5,
+    options: createOptions(2, [
+      { optionName: "군밤 500g", price: 10900 },
+      { optionName: "군밤 1kg", price: 18900 },
+    ]),
   },
   {
     id: 3,
-    productName: "한입 약과 패키지",
-    price: 12900,
+    productName: "JBL 키즈 블루투스 헤드폰",
+    price: 45900,
     image: "/images/3.jpg",
-    starCount: 5,
-    options: [
-      { id: 301, optionName: "기본 24개", price: 12900 },
-      { id: 302, optionName: "선물 포장 24개", price: 14900 },
-    ],
+    starCount: 4,
+    options: createOptions(3, [
+      { optionName: "민트", price: 45900 },
+      { optionName: "핑크 블루", price: 45900 },
+    ]),
   },
   {
     id: 4,
-    productName: "수제 초콜릿 컬렉션",
-    price: 25900,
+    productName: "바른 곡물효소 스틱",
+    price: 19900,
     image: "/images/4.jpg",
     starCount: 4,
-    options: [
-      { id: 401, optionName: "다크 12구", price: 25900 },
-      { id: 402, optionName: "믹스 18구", price: 34900 },
-    ],
+    options: createOptions(4, [
+      { optionName: "30포", price: 19900 },
+      { optionName: "60포", price: 34900 },
+    ]),
   },
   {
     id: 5,
-    productName: "데일리 드립백 커피",
-    price: 15900,
+    productName: "쫄깃한 대왕 오징어 다리",
+    price: 14900,
     image: "/images/5.jpg",
     starCount: 5,
-    options: [
-      { id: 501, optionName: "마일드 10개", price: 15900 },
-      { id: 502, optionName: "마일드 20개", price: 27900 },
-    ],
+    options: createOptions(5, [
+      { optionName: "오징어 다리 300g", price: 14900 },
+      { optionName: "오징어 다리 600g", price: 26900 },
+    ]),
   },
   {
     id: 6,
-    productName: "유기농 티 컬렉션",
-    price: 17900,
+    productName: "굳지 않는 앙금 가래떡 세트",
+    price: 16900,
     image: "/images/6.jpg",
+    starCount: 5,
+    options: createOptions(6, [
+      { optionName: "혼합 12개입", price: 16900 },
+      { optionName: "혼합 24개입", price: 29900 },
+    ]),
+  },
+  {
+    id: 7,
+    productName: "이너 딜리티 고식이섬유 티",
+    price: 23900,
+    image: "/images/7.jpg",
     starCount: 4,
-    options: [
-      { id: 601, optionName: "티백 15개", price: 17900 },
-      { id: 602, optionName: "티백 30개", price: 29900 },
-    ],
+    options: createOptions(7, [
+      { optionName: "15포", price: 23900 },
+      { optionName: "30포", price: 39900 },
+    ]),
+  },
+  {
+    id: 8,
+    productName: "제나벨 PDRN 리쥬비네이팅 크림",
+    price: 32900,
+    image: "/images/8.jpg",
+    starCount: 5,
+    options: createOptions(8, [
+      { optionName: "70ml 1개", price: 32900 },
+      { optionName: "70ml 2개 세트", price: 57900 },
+    ]),
+  },
+  {
+    id: 9,
+    productName: "PlayStation VR2 호라이즌 번들",
+    price: 688000,
+    image: "/images/9.jpg",
+    starCount: 5,
+    options: createOptions(9, [
+      { optionName: "호라이즌 번들", price: 688000 },
+      { optionName: "번들 + 충전 거치대", price: 728000 },
+    ]),
+  },
+  {
+    id: 10,
+    productName: "통영 홍가리비 산지직송",
+    price: 18900,
+    image: "/images/10.jpg",
+    starCount: 5,
+    options: createOptions(10, [
+      { optionName: "홍가리비 2kg", price: 18900 },
+      { optionName: "홍가리비 4kg", price: 32900 },
+    ]),
+  },
+  {
+    id: 11,
+    productName: "국산 궁채 장아찌",
+    price: 9900,
+    image: "/images/11.jpg",
+    starCount: 4,
+    options: createOptions(11, [
+      { optionName: "500g", price: 9900 },
+      { optionName: "1kg", price: 16900 },
+    ]),
+  },
+  {
+    id: 12,
+    productName: "깨끗한나라 순수소프트 화장지",
+    price: 21900,
+    image: "/images/12.jpg",
+    starCount: 5,
+    options: createOptions(12, [
+      { optionName: "27m 30롤", price: 21900 },
+      { optionName: "27m 60롤", price: 39900 },
+    ]),
+  },
+  {
+    id: 13,
+    productName: "초미세모 칫솔 패밀리 세트",
+    price: 13900,
+    image: "/images/13.jpg",
+    starCount: 4,
+    options: createOptions(13, [
+      { optionName: "12개입", price: 13900 },
+      { optionName: "24개입", price: 24900 },
+    ]),
+  },
+  {
+    id: 14,
+    productName: "고당도 샤인머스캣",
+    price: 24900,
+    image: "/images/14.jpg",
+    starCount: 5,
+    options: createOptions(14, [
+      { optionName: "2수 1.2kg", price: 24900 },
+      { optionName: "3수 2kg", price: 36900 },
+    ]),
+  },
+  {
+    id: 15,
+    productName: "일리 캡슐 커피머신 세트",
+    price: 159000,
+    image: "/images/15.jpg",
+    starCount: 5,
+    options: createOptions(15, [
+      { optionName: "화이트 + 캡슐 18개", price: 159000 },
+      { optionName: "화이트 + 캡슐 36개", price: 179000 },
+    ]),
   },
 ];

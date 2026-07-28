@@ -113,7 +113,7 @@ const CartList = () => {
   }
 
   return (
-    <Container className="mx-auto w-full max-w-[1024px] px-4 py-8">
+    <Container className="mx-auto w-full max-w-[960px] px-4 py-8 sm:px-6 lg:py-12">
       <Box>
         <Title>장바구니</Title>
       </Box>
@@ -130,15 +130,15 @@ const CartList = () => {
               />
             ))}
       </div>
-      <div className="mt-4 flex justify-between rounded border p-4">
-          <div>주문 예상 금액</div>
-          <div className="font-bold text-blue-600">
+      <div className="mt-5 flex items-center justify-between rounded-2xl bg-gray-900 p-5 text-white shadow-sm">
+          <div className="text-sm text-gray-300">주문 예상 금액</div>
+          <div className="text-xl font-bold text-yellow-300">
             {comma(calculateCartTotal(cartItems))}원
           </div>
         </div>
       
       <Button
-        className="mt-6 w-full rounded-md bg-yellow-300 p-3 text-center font-bold"
+        className="mt-4 h-14 w-full rounded-xl bg-yellow-300 p-3 text-center font-bold hover:bg-yellow-400"
         onClick={handleOrder}
       >
         <span>주문하기</span>

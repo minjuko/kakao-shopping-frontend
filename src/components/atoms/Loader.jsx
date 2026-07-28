@@ -1,13 +1,13 @@
 const Loader = () => {
   return (
-    <div className="flex h-20vh items-center justify-center m-8">
-      <div className="loader loader--style5" title="4">
+    <div className="flex min-h-[240px] items-center justify-center p-8" role="status" aria-label="불러오는 중">
+      <div className="loader loader--style5">
         <svg
           version="1.1"
           id="Layer_1"
           xmlns="http://www.w3.org/2000/svg"
           xmlnsXlink="http://www.w3.org/1999/xlink"
-          className="w-24 h-30"
+          className="h-[90px] w-20"
           viewBox="0 0 24 30"
           style={{ enableBackground: 'new 0 0 50 50' }}
           xmlSpace="preserve"
@@ -46,6 +46,7 @@ const Loader = () => {
             />
           </rect>
         </svg>
+        <span className="sr-only">불러오는 중</span>
       </div>
     </div>
   );

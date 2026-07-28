@@ -110,8 +110,8 @@ const OptionColumn = ({ product }) => {
   );
 
   return (
-    <section className="flex w-full flex-col rounded-lg border border-gray-200 p-4 lg:sticky lg:top-4 lg:self-start">
-      <h2 className="mb-3 text-lg font-bold">옵션 선택</h2>
+    <section className="flex w-full flex-col rounded-2xl border border-black/5 bg-white p-5 shadow-sm sm:p-6 lg:sticky lg:top-24 lg:self-start">
+      <h2 className="mb-4 text-xl font-bold">옵션 선택</h2>
       <OptionList
         options={product.options}
         onClick={handleOnClickOption}
@@ -119,19 +119,19 @@ const OptionColumn = ({ product }) => {
         selectedOptionIds={selectedOptions.map((option) => option.optionId)}
       />
 
-      <Container className="mt-5 text-sm">
-        <div className="flex">
+      <Container className="mt-5 rounded-xl bg-gray-50 p-4 text-sm text-gray-600">
+        <div className="mb-2 flex text-gray-800">
           <span className="mr-1 font-bold">배송 방법</span><span>택배배송</span>
         </div>
         <span className="font-bold">배송비</span>
-        <div className="rounded-sm border border-gray-500 bg-gray-200 p-0.5 text-xs text-gray-500">무료배송</div>
-        <span>제주 추가 3,000원, 제주 외 도서지역 추가 6,000원</span>
+        <span className="ml-2 rounded-full bg-white px-2 py-1 text-xs font-medium text-gray-700">무료배송</span>
+        <p className="mt-2 text-xs">제주 추가 3,000원, 제주 외 도서지역 추가 6,000원</p>
       </Container>
 
       <Container className="mb-2 mt-5 w-full">
         <ol className="selected-option-list">
           {selectedOptions.map((option) => (
-            <li key={option.optionId} className="mb-2 w-full rounded border border-gray-300 p-3">
+            <li key={option.optionId} className="mb-2 w-full rounded-xl border border-gray-200 bg-gray-50 p-4">
               <div className="flex items-start justify-between gap-3">
                 <div className="name">{option.name}</div>
                 <div className="flex items-center gap-3">
@@ -157,22 +157,22 @@ const OptionColumn = ({ product }) => {
       </Container>
 
       <Container className="w-full">
-        <div className="my-4 flex flex-wrap justify-between gap-3">
-          <div>총 수량: {totalQuantity}개</div>
-          <div>총 상품금액: {comma(totalPrice)}원</div>
+        <div className="my-4 flex flex-wrap items-end justify-between gap-3 border-t pt-5">
+          <div className="text-sm text-gray-600">총 수량: {totalQuantity}개</div>
+          <div><span className="mr-2 text-sm text-gray-600">총 상품금액</span><strong className="text-xl">{comma(totalPrice)}원</strong></div>
         </div>
       </Container>
 
       <Container className="mt-3 flex w-full gap-2">
         <Button
-          className="h-11 flex-1 rounded-md bg-gray-800 p-2 text-white disabled:cursor-not-allowed disabled:bg-gray-300"
+          className="h-12 flex-1 rounded-xl bg-gray-900 p-2 font-semibold text-white hover:bg-black disabled:cursor-not-allowed disabled:bg-gray-300"
           disabled={selectedOptions.length === 0 || isLoading}
           onClick={() => handleAddSelectedOptions("/cart", "cart")}
         >
           {isLoading && pendingAction === "cart" ? "담는 중..." : "장바구니 담기"}
         </Button>
         <Button
-          className="h-11 flex-1 rounded-md bg-yellow-300 p-2 font-bold disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-500"
+          className="h-12 flex-1 rounded-xl bg-yellow-300 p-2 font-bold hover:bg-yellow-400 disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-500"
           disabled={selectedOptions.length === 0 || isLoading}
           onClick={() => handleAddSelectedOptions("/order", "purchase")}
         >

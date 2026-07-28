@@ -38,7 +38,7 @@ const ProductDetailPage = () => {
   }
 
     return (
-      <div className="mx-auto grid w-full max-w-[1200px] gap-8 px-4 py-8 lg:grid-cols-2">
+      <div className="mx-auto grid w-full max-w-[1200px] gap-8 px-4 py-8 sm:px-6 lg:grid-cols-[minmax(0,1.4fr)_minmax(360px,0.8fr)] lg:py-12">
         <ProductInformationColumn product={product} />
         <OptionColumn product={product} />
       </div>

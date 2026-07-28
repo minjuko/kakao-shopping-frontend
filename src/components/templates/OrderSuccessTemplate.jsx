@@ -46,44 +46,50 @@ const OrderSuccessTemplate = () => {
   const orderTotalPrice = data.totalPrice;
 
   return (
-    <div>
-      <Title> 주문 완료 </Title>
-      <Box className="border w-100 p-4">
-      <div className="border font-bold ">주문상품 정보</div>
-      <div className="border">주문번호: {orderId}</div>
-      <div>
+    <div className="px-4 py-10 sm:px-6 lg:py-14">
+      <div className="mx-auto w-full max-w-[800px]">
+      <div className="mb-7 text-center">
+        <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-yellow-300 text-2xl" aria-hidden="true">✓</div>
+        <Title className="mb-2">주문이 완료되었습니다</Title>
+        <p className="text-sm text-gray-500">주문번호 {orderId}</p>
+      </div>
+      <Box className="rounded-2xl border border-black/5 bg-white p-5 shadow-sm sm:p-6">
+      <h2 className="mb-4 font-bold">주문상품 정보</h2>
+      <div className="space-y-3">
         {data &&
           orderProducts.map((item) => {
             return (
-              <div key={item.productName} className="border p-4 my-4">
-                <div className="font-bold"> 상품명 {item.productName}</div>
-                <div className="grid grid-rows-1 md:grid-rows-2 gap-4">
+              <section key={item.productName} className="rounded-xl bg-gray-50 p-4">
+                <h3 className="font-bold">{item.productName}</h3>
+                <div className="mt-3 grid gap-3 sm:grid-cols-2">
                   {item.items.map((option) => {
                     return (
-                      <div key={option.id} className=" p-2 mb-2 ">
-                        <div> 옵션명 {option.optionName}</div>
-                        <div> 수량 {option.quantity}</div>
-                        <div> 가격 {comma(option.price)}</div>
+                      <div key={option.id} className="rounded-lg bg-white p-3 text-sm">
+                        <div className="font-medium">{option.optionName}</div>
+                        <div className="mt-2 text-gray-500">수량 {option.quantity}개</div>
+                        <div className="mt-1 font-bold">{comma(option.price)}원</div>
                       </div>
                     );
                   })}
                 </div>
-              </div>
+              </section>
             );
           })}
       </div>
-      <div className="row flex justify=between border p-4">총 주문 금액 
-        <div className="ml-[15px] mr-[15px] font-bold text-blue-600">{comma(orderTotalPrice)} 원</div>
+      <div className="mt-5 flex items-center justify-between border-t pt-5">
+        <span className="text-sm text-gray-600">총 주문 금액</span>
+        <strong className="text-xl">{comma(orderTotalPrice)}원</strong>
         </div>
         </Box>
         <Button
-          className="p-2 font-bold text-center bg-yellow-300 rounded-md mt-10 ml-[3%] w-[95%]"
+          className="mt-4 h-14 w-full rounded-xl bg-yellow-300 p-2 text-center font-bold hover:bg-yellow-400"
           onClick={() => {
           navigate(staticServerUri + "/");
         }}
       >
         <span>쇼핑 계속하기</span>
       </Button>
+      </div>
     </div>
     
   );

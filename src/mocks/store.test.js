@@ -13,12 +13,12 @@ describe("MSW 데모 상태", () => {
   test("상품 옵션을 장바구니에 추가하고 수량을 변경한다", () => {
     addMockCartItems([{ optionId: 101, quantity: 2 }]);
     const addedCart = getMockCart();
-    expect(addedCart.totalPrice).toBe(37800);
+    expect(addedCart.totalPrice).toBe(25800);
 
     const cartId = addedCart.products[0].carts[0].id;
     const updatedCart = updateMockCartItems([{ cartId, quantity: 3 }]);
     expect(updatedCart.products[0].carts[0].quantity).toBe(3);
-    expect(updatedCart.totalPrice).toBe(56700);
+    expect(updatedCart.totalPrice).toBe(38700);
   });
 
   test("존재하지 않는 옵션은 404 시나리오를 반환한다", () => {
@@ -40,7 +40,7 @@ describe("MSW 데모 상태", () => {
     const { response } = saveMockOrder();
     const order = getMockOrder(response.id);
 
-    expect(order.totalPrice).toBe(37800);
+    expect(order.totalPrice).toBe(25800);
     expect(order.products[0].items[0].quantity).toBe(2);
     expect(getMockCart().products).toEqual([]);
   });
