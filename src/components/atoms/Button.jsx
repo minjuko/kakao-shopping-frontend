@@ -5,11 +5,13 @@
  * @returns Button Component
  */
 
-const Button = ({ onClick, children, className = "" }) => {
+const Button = ({ onClick, children, className = "", type = "button", ...buttonProps }) => {
     return (
         <button
+            type={type}
             onClick={onClick}
             className={`button ${className}`}
+            {...buttonProps}
         >
             {children}
         </button>

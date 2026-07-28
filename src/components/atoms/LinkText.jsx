@@ -1,17 +1,14 @@
 import { Link } from 'react-router-dom';
-import styled from 'styled-components';
-
-const StyledLink = styled(Link)`
-    text-decoration: none;
-    color: black;
-`;
-
 const LinkText = ({ text, to, className, onClick }) => {
     return (
         <span>
-            <StyledLink to={to} className={className} onClick={text === '로그인' || '로그아웃' ? onClick : null}>
+            <Link
+                to={to}
+                className={`font-semibold text-gray-900 underline decoration-yellow-400 decoration-2 underline-offset-4 ${className ?? ""}`}
+                onClick={onClick}
+            >
                 {text}
-            </StyledLink>
+            </Link>
         </span>
     );
 };

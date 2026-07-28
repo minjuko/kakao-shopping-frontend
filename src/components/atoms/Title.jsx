@@ -7,7 +7,7 @@
  * @returns {JSX.Element} - Title Component
  */
 const Title = ({ children, className = "" }) => {
-    return <h1 className={`title text-2xl mb-2 ${className}`}>{children}</h1>;
+    return <h1 className={`title mb-5 text-2xl font-bold tracking-tight ${className}`}>{children}</h1>;
   };
   
   export default Title;

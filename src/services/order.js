@@ -7,21 +7,9 @@ import { instance } from "./index";
 
 
 export const order = (payload) => {
-  const bearerToken = JSON.parse(localStorage.getItem("user")).value;
-  console.log(bearerToken)
-  return instance.post(`/orders/save`, payload, {
-  
-    headers: {
-      Authorization: `${bearerToken}`,
-    },
-  });
+  return instance.post(`/orders/save`, payload).then(({ data }) => data.response);
 };
 
 export const getOrderFromId = (id) => {
-  const bearerToken = JSON.parse(localStorage.getItem("user")).value;
-  return instance.get(`/orders/${id}`, {
-    headers: {
-      Authorization: `${bearerToken}`,
-    },
-  });
+  return instance.get(`/orders/${id}`).then(({ data }) => data.response);
 };

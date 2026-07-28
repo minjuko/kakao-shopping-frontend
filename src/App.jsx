@@ -6,7 +6,7 @@ import CartPage from "./pages/CartPage";
 import MainLayout from "./components/layouts/MainLayout";
 import ProductDetailPage from "./pages/ProductDetailPage";
 import NotFoundPage from "./pages/NotFoundPage";
-import OrderSuccessPage from "./pages/OrderSuccessPage.jsx";
+import OrderSuccessPage from "./pages/OrderSuccessPage";
 import OrderPage from "./pages/OrderPage";
 import RequiredAuthLayout from "./components/layouts/RequiredAuthLayout";
 
@@ -15,7 +15,7 @@ const staticServerUri = process.env.REACT_APP_PATH || "";
 const App = () => {
   return(
     <div>
-      <BrowserRouter>
+      <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
         <Routes>
           <Route path={staticServerUri + "/signup"} element={<RegisterPage />} />
           <Route path={staticServerUri + "/login"} element={<LoginPage />} />

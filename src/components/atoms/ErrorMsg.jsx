@@ -5,12 +5,18 @@ const ERROR_MSG = {
     invalidConfirmPw: "비밀번호가 일치하지 않습니다.",
   };
   
-  const ErrorMsg = ({ errorMsg, name }) => {
+  const ErrorMsg = ({ errorMsg = {}, name }) => {
+    const message = ERROR_MSG[errorMsg[name]];
+
+    if (!message) {
+      return null;
+    }
+
     return (
-      <div className={`text-red-300 text-xs ${errorMsg[name] ? "mb-4" : ""}`}>
-        {errorMsg[name] ? ERROR_MSG[errorMsg[name]] : null}
-      </div>
+      <p id={`${name}-error`} className="mb-4 text-xs text-red-600" role="alert">
+        {message}
+      </p>
     );
   };
   
-  export default ErrorMsg;  
+  export default ErrorMsg;

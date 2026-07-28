@@ -1,21 +1,21 @@
+/* 2주차 UI 컴포넌트 구현 과제 스타일 */
 .carousel {
     width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
   }
-  
+
   .carousel-image {
     width: 150px;
     height: 150px;
   }
-  
+
   .carousel-buttons {
     display: flex;
     justify-content: center;
     margin-top: 20px;
   }
-  
   .carousel-button {
     padding: 8px 16px;
     margin: 0 5px;
@@ -30,4 +30,3 @@
   .carousel-button:hover {
     background-color: #becfe0;
   }
-  

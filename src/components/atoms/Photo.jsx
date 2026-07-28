@@ -1,5 +1,4 @@
 import React from "react";
-import styled from "styled-components";
 
 /**
  *
@@ -10,24 +9,12 @@ import styled from "styled-components";
  *
  * @returns {JSX.Element} - Photo Component
  */
-const ImageContainer = styled.picture`
-  .card {
-    width: 18em;
-    height: 11em;
-    object-fit: cover;
-    border-radius: 5px;
-  }
-  img {
-    width: inherit;
-  }
-`;
-
-const Photo = ({ className, src, alt }) => {
+const Photo = ({ className, pictureClassName = "", src, alt }) => {
   return (
-    <ImageContainer>
+    <picture className={`block w-full ${pictureClassName}`}>
       <source media="(min-width: 650px)" srcSet={src} />
       <img src={src} alt={alt} className={className} />
-    </ImageContainer>
+    </picture>
   );
 };
 

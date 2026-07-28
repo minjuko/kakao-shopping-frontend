@@ -1,44 +1,25 @@
 import React, { useState } from "react";
-import styled from "styled-components";
 import InputGroup from "../molecules/InputGroup";
 import useInput from "../../hooks/useInput";
-import LinkText from "../atoms/LinkText";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { register } from "../../services/user";
 import { useDispatch } from "react-redux";
 import { setUser } from "../../store/slices/userSlice";
-import { setLocalStorageWithExp } from "../../utils/localStorage";
+import { setAuthToken } from "../../utils/localStorage";
 import Title from "../atoms/Title";
-import { EMAIL_REGEX, PW_REGEX } from "../../utils/regex";
+import logoKakao from "../../assets/logoKakao.png";
+import {
+    isValidAuthForm,
+    validateAuthField,
+    validateRegistration,
+} from "../../utils/authValidation";
 
 const staticServerUri = process.env.REACT_APP_PATH || "";
-
-const Container = styled.main`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-`;
-
-const Box = styled.div`
-    border: 1px solid #c9c8c8;
-    padding: 2em;
-    margin-bottom: 1em;
-`;
-
-const Button = styled.button`
-    background-color: #fee500;
-    border-width: 0;
-    font-size: 1em;
-    border-radius: 0px;
-    width: 25em;
-    height: 3em;
-    pointer-events: ${(props) => (props.disabled ? "none" : null)};
-`;
 
 const RegisterForm = () => {
     const dispatch = useDispatch();
     const [error, setError] = useState("");
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const { value, handleOnChange } = useInput({
         username: "",
         email: "",
@@ -53,69 +34,89 @@ const RegisterForm = () => {
         passwordConfirm: "",
     });
 
-    const checkRegex = (inputName, inputValue) => {
-        let result;
-        if (value[inputName].length === 0) {
-            result = 'required';
-        } else {
-            switch (inputName) {
-                case 'email':
-                    result = EMAIL_REGEX.test(inputValue) ? true : 'invalidEmail';
-                    break;
-                case 'username':
-                    result = true;
-                    break;
-                case 'password':
-                    result = PW_REGEX.test(inputValue) ? true : 'invalidPw';
-                    if (value['passwordConfirm']) {
-                        checkRegex('passwordConfirm', value['passwordConfirm']);
-                    }
-                    break;
-                case 'passwordConfirm':
-                    result = inputValue === value['password'] ? true : 'invalidConfirmPw';
-                    break;
-                default:
-                    return;
-            }
-        }
-        setInvalidCheck((prev) => ({ ...prev, [inputName]: result }));
-    };
-
     const handleOnCheck = (e) => {
-        const { name, value } = e.target;
-        checkRegex(name, value);
+        const { name, value: inputValue } = e.target;
+        const nextValues = { ...value, [name]: inputValue };
+
+        setInvalidCheck((prev) => ({
+            ...prev,
+            [name]: validateAuthField(name, inputValue, nextValues),
+            ...(name === "password" && value.passwordConfirm
+                ? {
+                    passwordConfirm: validateAuthField(
+                        "passwordConfirm",
+                        value.passwordConfirm,
+                        nextValues
+                    ),
+                }
+                : {}),
+        }));
     };
 
-    const registerReq = () => {
-        register({
-            email: value.email,
-            password: value.password,
-            username: value.username,
-        })
-            .then((res) => {
-                setError("");
-                dispatch(setUser({
-                    user: value.user,
-                }));
-                setLocalStorageWithExp("user", res.headers.authorization, 1000 * 60 * 60 * 24);
-                navigate(staticServerUri + "/");
-            })
-            .catch((err) => {
-                console.log(err.request.response);
-                const errObject = JSON.parse(err.request.response);
-                setError(errObject.error.message);
+    /**
+     * 회원가입 API 에러 캐칭 시나리오
+     * 1. 400·409: 유효하지 않은 정보나 중복 이메일에 대한 서버 메시지를 표시한다.
+     * 2. 네트워크 오류: 회원가입 실패 기본 메시지를 화면에 표시한다.
+     * 3. 그 외 서버 오류: 서버 메시지가 있으면 우선 표시하고 재제출할 수 있게 한다.
+     */
+    const registerReq = async (event) => {
+        event.preventDefault();
+
+        if (isSubmitting) {
+            return;
+        }
+
+        const validation = validateRegistration(value);
+        setInvalidCheck(validation);
+
+        if (!isValidAuthForm(validation)) {
+            return;
+        }
+
+        setIsSubmitting(true);
+        setError("");
+
+        try {
+            const res = await register({
+                email: value.email,
+                password: value.password,
+                username: value.username,
             });
+            const token = res.headers.authorization;
+            dispatch(setUser({ user: token }));
+            setAuthToken(token, 1000 * 60 * 60 * 24);
+            navigate(staticServerUri + "/", {
+                replace: true,
+                state: { toastMessage: "회원가입이 완료되었습니다." },
+            });
+        } catch (err) {
+            setError(err.response?.data?.error?.message ?? "회원가입에 실패했습니다.");
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
 
     const navigate = useNavigate();
-    const isValid = Object.values(invalidCheck).every((value) => value === true);
-
     return (
-        <>
-            <Container>
-                <Title>회원가입</Title>
-                <Box>
+        <main className="flex min-h-screen flex-col items-center bg-white px-4 pb-4 pt-6 sm:pt-8">
+            <Link
+                to={staticServerUri + "/"}
+                className="mb-5"
+                aria-label="카카오 쇼핑하기 홈"
+            >
+                <img src={logoKakao} alt="쇼핑하기" className="h-10 w-auto" />
+            </Link>
+
+            <section className="w-full max-w-[460px] rounded-2xl border border-gray-300 bg-white px-6 py-6 sm:px-11 sm:py-7">
+                <div className="mb-5 text-center">
+                    <Title className="mb-3 text-[22px]">카카오 쇼핑 회원가입</Title>
+                    <p className="text-sm leading-6 text-gray-500">
+                        간단한 정보 입력으로 쇼핑을 시작해 보세요.
+                    </p>
+                </div>
+
+                <form onSubmit={registerReq} noValidate>
                     <InputGroup
                         id="email"
                         name="email"
@@ -126,6 +127,10 @@ const RegisterForm = () => {
                         onChange={handleOnChange}
                         onBlur={handleOnCheck}
                         invalid={invalidCheck}
+                        autoComplete="email"
+                        required
+                        className="mb-4"
+                        inputClassName="h-12 rounded-lg border-gray-300 text-[15px] focus:border-gray-900 focus:ring-1 focus:ring-gray-900"
                     />
                     <InputGroup
                         id="username"
@@ -137,6 +142,10 @@ const RegisterForm = () => {
                         onChange={handleOnChange}
                         onBlur={handleOnCheck}
                         invalid={invalidCheck}
+                        autoComplete="name"
+                        required
+                        className="mb-4"
+                        inputClassName="h-12 rounded-lg border-gray-300 text-[15px] focus:border-gray-900 focus:ring-1 focus:ring-gray-900"
                     />
                     <InputGroup
                         id="password"
@@ -148,6 +157,10 @@ const RegisterForm = () => {
                         onChange={handleOnChange}
                         onBlur={handleOnCheck}
                         invalid={invalidCheck}
+                        autoComplete="new-password"
+                        required
+                        className="mb-4"
+                        inputClassName="h-12 rounded-lg border-gray-300 text-[15px] focus:border-gray-900 focus:ring-1 focus:ring-gray-900"
                     />
                     <InputGroup
                         id="passwordConfirm"
@@ -159,22 +172,33 @@ const RegisterForm = () => {
                         onChange={handleOnChange}
                         onBlur={handleOnCheck}
                         invalid={invalidCheck}
+                        autoComplete="new-password"
+                        required
+                        className="mb-4"
+                        inputClassName="h-12 rounded-lg border-gray-300 text-[15px] focus:border-gray-900 focus:ring-1 focus:ring-gray-900"
                     />
-                    {error !== '' ? <div className="bg-gray-50 border border-gray-100 text-red-600">{error}</div> : null}
-                    <Button
-                        onClick={() => {
-                            registerReq();
-                        }}
-                        disabled={isValid === true ? "" : "disabled"}
+                    {error && <p className="mb-5 rounded-lg border border-red-100 bg-red-50 px-4 py-3 text-sm text-red-600" role="alert">{error}</p>}
+                    <button
+                        className="h-12 w-full rounded-lg bg-[#fee500] text-[16px] font-semibold text-[#191919] transition hover:bg-[#f5dc00] focus:outline-none focus:ring-2 focus:ring-[#191919] focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60"
+                        type="submit"
+                        disabled={isSubmitting}
                     >
-                        회원가입
-                    </Button>
-                    <div className="text-0.8em mt-1.5em">
-						 <LinkText to={staticServerUri + "/login"} text="로그인" />
-                    </div>
-                </Box>
-            </Container>
-        </>
+                        {isSubmitting ? "가입 중..." : "회원가입"}
+                    </button>
+
+                    <Link
+                        to={staticServerUri + "/login"}
+                        className="mt-4 flex h-12 w-full items-center justify-center rounded-lg border border-gray-300 bg-white text-[15px] font-semibold text-gray-800 transition hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2"
+                    >
+                        로그인
+                    </Link>
+                </form>
+            </section>
+
+            <p className="mt-4 text-center text-xs text-gray-400">
+                © 2023 카카오테크캠퍼스 Frontend Clone Project
+            </p>
+        </main>
     );
 };
 

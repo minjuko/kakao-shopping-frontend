@@ -4,7 +4,7 @@ import { comma } from "../../utils/convert";
 
 const OrderItem = ({ item }) => {
   return (
-    <Box className="cart-item-box border w-100 p-4">
+    <Box className="cart-item-box w-full border p-4">
       <h5 className="font-bold mb-4">{item.productName}</h5>
       {item.carts.map((cart) => (
           cart.quantity > 0 ? (

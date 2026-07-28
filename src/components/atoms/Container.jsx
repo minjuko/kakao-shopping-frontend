@@ -5,7 +5,7 @@
 
 const Container = ({children, className = ""}) => {
     return( 
-        <div className={`container ${className}`}>
+        <div className={`w-full ${className}`}>
             {children}
         </div>
     );

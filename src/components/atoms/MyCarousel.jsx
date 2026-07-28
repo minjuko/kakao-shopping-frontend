@@ -7,17 +7,24 @@ import image3 from "../../assets/carouselItem3.jpeg";
 
 const MyCarousel = () => {
   return (
-    <Carousel showArrows={true} showThumbs={false} autoPlay={true} infiniteLoop={true}>
-      <div>
-        <img src={image1} alt="Image 1" />
+    <section
+      className="mx-auto w-full max-w-[1200px] px-4 pt-4 sm:px-6"
+      aria-label="추천 상품 배너"
+    >
+      <div className="overflow-hidden rounded-2xl">
+        <Carousel showArrows={true} showThumbs={false} autoPlay={true} infiniteLoop={true}>
+          <div>
+            <img src={image1} alt="카카오 쇼핑 추천 상품 1" />
+          </div>
+          <div>
+            <img src={image2} alt="카카오 쇼핑 추천 상품 2" />
+          </div>
+          <div>
+            <img src={image3} alt="카카오 쇼핑 추천 상품 3" />
+          </div>
+        </Carousel>
       </div>
-      <div>
-        <img src={image2} alt="Image 2" />
-      </div>
-      <div>
-        <img src={image3} alt="Image 3" />
-      </div>
-    </Carousel>
+    </section>
   );
 };
 

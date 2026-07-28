@@ -1,32 +1,85 @@
 .toast {
-    position: fixed;
-    padding: 10px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    left: 0;
-    bottom: 0;
-    width: 30%;
-    background-color: #0A6EBD;
-    color: #fff;
-    animation: toastAnimation 1s ease-in-out;
+  position: fixed;
+  z-index: 100;
+  left: 50%;
+  bottom: 24px;
+  display: flex;
+  width: calc(100% - 32px);
+  max-width: 400px;
+  min-height: 54px;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  transform: translateX(-50%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 16px;
+  background-color: #191919;
+  color: #fff;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.24);
+  animation: toast-enter 200ms ease-out;
+}
+
+.toast-icon {
+  display: inline-flex;
+  width: 28px;
+  height: 28px;
+  flex: 0 0 28px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background-color: #fee500;
+  color: #191919;
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.toast-message {
+  flex: 1;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+.toast-close {
+  display: inline-flex;
+  width: 30px;
+  height: 30px;
+  flex: 0 0 30px;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: #bdbdbd;
+  cursor: pointer;
+  font-size: 22px;
+  line-height: 1;
+}
+
+.toast-close:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.toast-close:focus-visible {
+  outline: 2px solid #fee500;
+  outline-offset: 2px;
+}
+
+@keyframes toast-enter {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 12px);
   }
-  
-  @keyframes toastAnimation {
-    0% {
-      opacity: 0;
-    }
-    10% {
-      opacity: 1;
-    }
-    90% {
-      opacity: 1;
-    }
-    100% {
-      opacity: 0;
-    }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
   }
-  
-  .toast-message {
-    color: #fff;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .toast {
+    animation: none;
   }
+}

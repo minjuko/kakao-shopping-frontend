@@ -1,34 +1,61 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const Counter = ({
   initCount = 1,
-  onIncrease, 
-  onDecrease, 
+  min = 1,
+  max = 99,
+  onIncrease = () => {},
+  onDecrease = () => {},
 }) => {
   const [count, setCount] = useState(initCount);
+
+  useEffect(() => {
+    setCount(initCount);
+  }, [initCount]);
+
   const handleOnIncrease = () => {
-    if (count < 99) {
-      setCount(count + 1);
-      onIncrease(count + 1);
+    if (count < max) {
+      const nextCount = count + 1;
+      setCount(nextCount);
+      onIncrease(nextCount);
     }
   };
+
   const handleOnDecrease = () => {
-    if (count > 1) {
-      setCount(count - 1);
-      onDecrease(count - 1);
+    if (count > min) {
+      const nextCount = count - 1;
+      setCount(nextCount);
+      onDecrease(nextCount);
     }
   };
+
   return (
-    <div>
-      <div className="flex">
-        <button className="border w-6" onClick={handleOnDecrease}>
+    <div className="flex" role="group" aria-label="상품 수량 선택">
+        <button
+          type="button"
+          className="border w-6 disabled:text-gray-300"
+          aria-label="수량 줄이기"
+          disabled={count <= min}
+          onClick={handleOnDecrease}
+        >
           -
         </button>
-        <div className="border w-12 text-center">{count}</div>
-        <button className="border w-6" onClick={handleOnIncrease}>
+        <output
+          className="border w-12 text-center"
+          aria-label="현재 수량"
+          aria-live="polite"
+        >
+          {count}
+        </output>
+        <button
+          type="button"
+          className="border w-6 disabled:text-gray-300"
+          aria-label="수량 늘리기"
+          disabled={count >= max}
+          onClick={handleOnIncrease}
+        >
           +
         </button>
-      </div>
     </div>
   );
 };
