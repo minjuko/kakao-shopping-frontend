@@ -2,14 +2,32 @@ import React from "react";
 import Box from "./Box";
 import { comma } from "../../utils/convert";
 import Counter from "./Counter";
-import Button from "./Button";
+import DeleteButton from "./DeleteButton";
 
 const staticServerUri = process.env.REACT_APP_PATH || "";
 
-const CartItem = ({ item, onChange, onDelete }) => {
+const CartItem = ({
+  item,
+  onChange,
+  onDelete,
+  selected = true,
+  showSelection = false,
+  onSelect,
+}) => {
   return (
-    <Box className="w-full rounded-2xl border border-gray-200 bg-white p-3 shadow-md sm:p-4">
+    <Box className={`w-full rounded-2xl border bg-white p-3 shadow-md transition sm:p-4 ${
+      selected ? "border-gray-200" : "border-gray-200 opacity-60"
+    }`}>
       <div className="mb-4 flex items-center gap-4 border-b border-gray-100 pb-4">
+        {showSelection && (
+          <input
+            type="checkbox"
+            className="h-5 w-5 shrink-0 accent-yellow-400"
+            checked={selected}
+            onChange={(event) => onSelect(item.id, event.target.checked)}
+            aria-label={`${item.productName} 선택`}
+          />
+        )}
         {item.image && (
           <img
             src={`${staticServerUri}/assets${item.image}`}
@@ -39,15 +57,12 @@ const CartItem = ({ item, onChange, onDelete }) => {
                     onChange(cart.id, count);
                   }}
                 ></Counter>
-                <Button
-                  className="rounded-lg px-2 py-1 text-xs text-gray-500 underline underline-offset-2 hover:text-red-600"
-                  aria-label={`${cart.option.optionName} 삭제`}
+                <DeleteButton
+                  label={cart.option.optionName}
                   onClick={() => {
                     onDelete(cart.id)
                   }}
-                >
-                  삭제
-                </Button>
+                />
               </div>
               <div className="price pr-1 font-bold">
                 <span>{comma(cart.option.price * cart.quantity)}원</span>

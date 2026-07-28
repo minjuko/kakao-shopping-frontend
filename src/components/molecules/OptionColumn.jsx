@@ -8,6 +8,7 @@ import Counter from "../atoms/Counter";
 import { addCart } from "../../services/cart";
 import { queryKeys } from "../../services/queryKeys";
 import useApiErrorHandler from "../../hooks/useApiErrorHandler";
+import DeleteButton from "../atoms/DeleteButton";
 import { comma } from "../../utils/convert";
 
 const staticServerUri = process.env.REACT_APP_PATH || "";
@@ -138,13 +139,10 @@ const OptionColumn = ({ product }) => {
                   <div className="price whitespace-nowrap">
                     {comma(option.price * option.quantity)}원
                   </div>
-                  <Button
-                    className="rounded border border-red-300 px-2 py-1 text-xs text-red-600 hover:bg-red-50"
-                    aria-label={`${option.name} 삭제`}
+                  <DeleteButton
+                    label={option.name}
                     onClick={() => handleOnDelete(option.optionId)}
-                  >
-                    삭제
-                  </Button>
+                  />
                 </div>
               </div>
               <Counter

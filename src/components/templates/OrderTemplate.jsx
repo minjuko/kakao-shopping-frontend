@@ -1,13 +1,14 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { comma } from "../../utils/convert";
 import { order } from "../../services/order";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { getCart } from "../../services/cart";
 import { queryKeys } from "../../services/queryKeys";
 import useApiErrorHandler from "../../hooks/useApiErrorHandler";
 import Loader from "../atoms/Loader";
 import QueryStatus from "../atoms/QueryStatus";
+import { calculateCartTotal } from "../../utils/cart";
 
 const staticServerUri = process.env.REACT_APP_PATH || "";
 const demoShippingAddress = {
@@ -48,8 +49,14 @@ const OrderTemplate = () => {
    * 3. 정상 응답에 상품이 없는 경우: 주문할 상품이 없다는 상태를 표시한다.
    */
   const { data, isLoading, isError } = useQuery(queryKeys.cart, getCart);
-  const { products = [], totalPrice = 0 } = data ?? {};
-  const hasOrderItems = products.some((product) =>
+  const { products = [] } = data ?? {};
+  const location = useLocation();
+  const selectedProductIds = location.state?.selectedProductIds;
+  const orderProducts = Array.isArray(selectedProductIds)
+    ? products.filter((product) => selectedProductIds.includes(product.id))
+    : products;
+  const totalPrice = calculateCartTotal(orderProducts);
+  const hasOrderItems = orderProducts.some((product) =>
     product.carts.some((cart) => cart.quantity > 0)
   );
   const queryClient = useQueryClient();
@@ -162,7 +169,7 @@ const OrderTemplate = () => {
         <section className="rounded-2xl border border-gray-200 bg-white p-4 shadow-md" aria-labelledby="order-products-title">
           <h2 id="order-products-title" className="font-bold">주문상품 정보</h2>
           <div className="mt-4 space-y-3">
-            <OrderItems products={products} />
+            <OrderItems products={orderProducts} />
           </div>
         </section>
 
@@ -266,7 +273,13 @@ const OrderTemplate = () => {
               }
 
               setFeedbackMessage("");
-              mutate(null, {
+              const selectedCartIds = orderProducts.flatMap((product) =>
+                product.carts
+                  .filter((cart) => cart.quantity > 0)
+                  .map((cart) => cart.id)
+              );
+
+              mutate({ cartIds: selectedCartIds }, {
                 onSuccess: async (res) => {
                   await queryClient.invalidateQueries(queryKeys.cart);
                   const id = res.id;

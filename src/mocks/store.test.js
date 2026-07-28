@@ -64,6 +64,23 @@ describe("MSW 데모 상태", () => {
     expect(getMockCart().products).toEqual([]);
   });
 
+  test("선택한 장바구니 상품만 주문하고 나머지는 유지한다", () => {
+    addMockCartItems([
+      { optionId: 101, quantity: 1 },
+      { optionId: 201, quantity: 1 },
+    ]);
+    const cart = getMockCart();
+    const selectedCartId = cart.products[1].carts[0].id;
+    const { response } = saveMockOrder([selectedCartId]);
+    const savedOrder = getMockOrder(response.id);
+    const remainingCart = getMockCart();
+
+    expect(savedOrder.products).toHaveLength(1);
+    expect(savedOrder.products[0].productName).toBe("황금약단밤 칼집 군밤");
+    expect(remainingCart.products).toHaveLength(1);
+    expect(remainingCart.products[0].productName).toBe("기본에 크리스마스 슬라이딩 지퍼백");
+  });
+
   test("빈 장바구니 주문은 400 시나리오를 반환한다", () => {
     expect(saveMockOrder()).toEqual({
       error: { status: 400, message: "주문할 상품이 없습니다." },

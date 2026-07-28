@@ -87,14 +87,26 @@ export const updateMockCartItems = (updates) => {
   return getMockCart();
 };
 
-export const saveMockOrder = () => {
+export const saveMockOrder = (selectedCartIds) => {
+  const selectedIdSet = Array.isArray(selectedCartIds)
+    ? new Set(selectedCartIds)
+    : null;
   const cart = getMockCart();
-  if (cart.products.length === 0) {
+  const products = cart.products
+    .map((product) => ({
+      ...product,
+      carts: product.carts.filter(
+        (item) => !selectedIdSet || selectedIdSet.has(item.id)
+      ),
+    }))
+    .filter((product) => product.carts.length > 0);
+
+  if (products.length === 0) {
     return { error: { status: 400, message: "주문할 상품이 없습니다." } };
   }
 
   const id = nextOrderId++;
-  const products = cart.products.map((product) => ({
+  const orderProducts = products.map((product) => ({
     productName: product.productName,
     items: product.carts.map((item) => ({
       id: item.id,
@@ -103,8 +115,19 @@ export const saveMockOrder = () => {
       price: item.option.price * item.quantity,
     })),
   }));
-  orders.set(id, { id, products, totalPrice: cart.totalPrice });
-  cartItems = [];
+  const totalPrice = products.reduce(
+    (total, product) =>
+      total +
+      product.carts.reduce(
+        (subtotal, item) => subtotal + item.option.price * item.quantity,
+        0
+      ),
+    0
+  );
+  orders.set(id, { id, products: orderProducts, totalPrice });
+  cartItems = selectedIdSet
+    ? cartItems.filter((item) => !selectedIdSet.has(item.id))
+    : [];
   return { response: { id } };
 };
 

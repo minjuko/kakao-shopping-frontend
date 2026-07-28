@@ -40,7 +40,7 @@ const cartData = {
   totalPrice: 2000,
 };
 
-const renderOrderTemplate = () => {
+const renderOrderTemplate = (initialEntry = "/order") => {
   const store = configureStore({ reducer: { user: userReducer } });
   const queryClient = new QueryClient({
     defaultOptions: { queries: { retry: false }, mutations: { retry: false } },
@@ -49,7 +49,10 @@ const renderOrderTemplate = () => {
   return render(
     <Provider store={store}>
       <QueryClientProvider client={queryClient}>
-        <MemoryRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+        <MemoryRouter
+          initialEntries={[initialEntry]}
+          future={{ v7_startTransition: true, v7_relativeSplatPath: true }}
+        >
           <OrderTemplate />
         </MemoryRouter>
       </QueryClientProvider>
@@ -136,7 +139,36 @@ describe("OrderTemplate", () => {
     fireEvent.click(await screen.findByLabelText("전체 동의"));
     fireEvent.click(screen.getByRole("button", { name: "결제하기" }));
 
-    await waitFor(() => expect(order).toHaveBeenCalledWith(null));
+    await waitFor(() => expect(order).toHaveBeenCalledWith({ cartIds: [10] }));
     await waitFor(() => expect(mockNavigate).toHaveBeenCalledWith("/orders/complete/99"));
+  });
+
+  test("장바구니에서 선택한 상품만 주문 대상으로 표시한다", async () => {
+    getCart.mockResolvedValue({
+      products: [
+        cartData.products[0],
+        {
+          id: 2,
+          productName: "선택 상품",
+          carts: [
+            {
+              id: 20,
+              quantity: 1,
+              option: { optionName: "선택 옵션", price: 5000 },
+            },
+          ],
+        },
+      ],
+      totalPrice: 7000,
+    });
+
+    renderOrderTemplate({
+      pathname: "/order",
+      state: { selectedProductIds: [2] },
+    });
+
+    expect(await screen.findByText("선택 상품 선택 옵션")).toBeInTheDocument();
+    expect(screen.queryByText("테스트 상품 기본 옵션")).not.toBeInTheDocument();
+    expect(screen.getAllByText("5,000원")).toHaveLength(3);
   });
 });

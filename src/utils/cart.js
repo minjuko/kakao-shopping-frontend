@@ -11,6 +11,18 @@ export const updateCartItemQuantity = (products, cartId, quantity) =>
     ),
   }));
 
+export const updateCartDataQuantity = (cartData, cartId, quantity) =>
+  cartData
+    ? {
+        ...cartData,
+        products: updateCartItemQuantity(
+          cartData.products ?? [],
+          cartId,
+          quantity
+        ),
+      }
+    : cartData;
+
 export const calculateCartTotal = (products) =>
   products.reduce(
     (productTotal, product) =>

@@ -90,7 +90,8 @@ export const handlers = [
       return error(401, "로그인이 필요한 서비스입니다.");
     }
 
-    const result = saveMockOrder();
+    const payload = await request.json();
+    const result = saveMockOrder(payload.cartIds);
     if (result.error) {
       return error(result.error.status, result.error.message);
     }

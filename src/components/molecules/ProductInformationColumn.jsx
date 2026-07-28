@@ -9,11 +9,11 @@ const ProductInformationColumn = ({ product}) => {
     const { productName, price} = product;
 
 return (
-    <section className="overflow-hidden rounded-2xl border border-black/5 bg-white p-4 shadow-sm">
-        <div className="aspect-[16/10] w-full overflow-hidden rounded-xl bg-gray-50">
+    <section className="overflow-hidden rounded-2xl border border-black/5 bg-white p-3 shadow-sm">
+        <div className="aspect-[2/1] w-full overflow-hidden rounded-xl bg-gray-50">
             <Photo src={`${staticServerUri}/assets${product.image}`} alt={productName} className="h-full w-full object-cover"/>
         </div>
-        <div className="flex flex-col items-start gap-2 pb-1 pt-4">
+        <div className="flex flex-col items-start gap-2 pb-1 pt-3">
           <div className="flex items-center gap-2">
             <span className="rounded-md bg-gray-900 px-2 py-1 text-xs font-bold text-yellow-300">
               톡딜

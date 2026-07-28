@@ -198,7 +198,7 @@ const RegisterForm = () => {
             </section>
 
             <p className="mt-6 text-center text-xs text-gray-400">
-                © Kakao Shopping Clone
+                © 2023 카카오테크캠퍼스 Frontend Clone Project
             </p>
         </main>
     );

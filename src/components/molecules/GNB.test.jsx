@@ -52,7 +52,7 @@ describe("GNB", () => {
     setAuthToken("Bearer token", 60_000);
     const { store } = renderGNB();
 
-    fireEvent.click(screen.getByRole("link", { name: "로그아웃" }));
+    fireEvent.click(screen.getByRole("button", { name: "로그아웃" }));
 
     expect(localStorage.getItem("user")).toBeNull();
     expect(store.getState().user.user).toBeNull();

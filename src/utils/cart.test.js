@@ -1,6 +1,7 @@
 import {
   calculateCartTotal,
   hasCartItems,
+  updateCartDataQuantity,
   updateCartItemQuantity,
   upsertCartUpdate,
 } from "./cart";
@@ -39,6 +40,15 @@ describe("장바구니 계산", () => {
     expect(result[0].carts[0].quantity).toBe(5);
     expect(result[0].carts[1].quantity).toBe(1);
     expect(result).not.toBe(products);
+  });
+
+  test("공유 장바구니 캐시의 수량을 불변 방식으로 변경한다", () => {
+    const cartData = { products };
+    const result = updateCartDataQuantity(cartData, 10, 5);
+
+    expect(result.products[0].carts[0].quantity).toBe(5);
+    expect(result).not.toBe(cartData);
+    expect(result.products).not.toBe(products);
   });
 
   test("모든 상품 옵션의 수량과 가격으로 총금액을 계산한다", () => {

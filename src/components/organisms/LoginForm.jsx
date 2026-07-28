@@ -152,15 +152,9 @@ const LoginForm = () => {
                         {isSubmitting ? "로그인 중..." : "로그인"}
                     </button>
 
-                    <div className="my-6 flex items-center gap-4" aria-hidden="true">
-                        <span className="h-px flex-1 bg-gray-200" />
-                        <span className="text-xs text-gray-400">또는</span>
-                        <span className="h-px flex-1 bg-gray-200" />
-                    </div>
-
                     <Link
                         to={staticServerUri + "/signup"}
-                        className="flex h-14 w-full items-center justify-center rounded-lg border border-gray-300 bg-white text-[15px] font-semibold text-gray-800 transition hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2"
+                        className="mt-4 flex h-14 w-full items-center justify-center rounded-lg border border-gray-300 bg-white text-[15px] font-semibold text-gray-800 transition hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2"
                     >
                         회원가입
                     </Link>
@@ -168,7 +162,7 @@ const LoginForm = () => {
             </section>
 
             <p className="mt-6 text-center text-xs text-gray-400">
-                © Kakao Shopping Clone
+                © 2023 카카오테크캠퍼스 Frontend Clone Project
             </p>
         </main>
     );

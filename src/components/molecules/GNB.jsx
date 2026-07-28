@@ -73,6 +73,11 @@ const GNB = () => {
   const handleLogOut = () => {
     dispatch(setUser({ user: null }));
     clearAuthToken();
+    navigate(staticServerUri + "/", {
+      replace: true,
+      state: { toastMessage: "로그아웃되었습니다." },
+    });
+    navigate(0);
   };
 
   return (
@@ -139,15 +144,13 @@ const GNB = () => {
             )}
           </Link>
           {user ? (
-            <Link
-              to={staticServerUri + "/"}
-              state={{ toastMessage: "로그아웃되었습니다." }}
-              replace
+            <button
+              type="button"
               className="rounded-full px-3 py-2 font-medium hover:bg-gray-100"
               onClick={handleLogOut}
             >
               로그아웃
-            </Link>
+            </button>
           ) : (
             <>
               <Link
