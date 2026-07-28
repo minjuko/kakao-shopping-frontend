@@ -9,9 +9,9 @@ import React from "react";
  *
  * @returns {JSX.Element} - Photo Component
  */
-const Photo = ({ className, src, alt }) => {
+const Photo = ({ className, pictureClassName = "", src, alt }) => {
   return (
-    <picture className="block w-full">
+    <picture className={`block w-full ${pictureClassName}`}>
       <source media="(min-width: 650px)" srcSet={src} />
       <img src={src} alt={alt} className={className} />
     </picture>

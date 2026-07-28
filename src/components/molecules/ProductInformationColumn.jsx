@@ -11,7 +11,12 @@ const ProductInformationColumn = ({ product}) => {
 return (
     <section className="overflow-hidden rounded-2xl border border-black/5 bg-white p-3 shadow-sm">
         <div className="aspect-[2/1] w-full overflow-hidden rounded-xl bg-gray-50">
-            <Photo src={`${staticServerUri}/assets${product.image}`} alt={productName} className="h-full w-full object-cover"/>
+            <Photo
+              src={`${staticServerUri}/assets${product.image}`}
+              alt={productName}
+              pictureClassName="h-full"
+              className="h-full w-full object-contain p-2"
+            />
         </div>
         <div className="flex flex-col items-start gap-2 pb-1 pt-3">
           <div className="flex items-center gap-2">
