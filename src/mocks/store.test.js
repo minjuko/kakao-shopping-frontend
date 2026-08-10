@@ -7,11 +7,12 @@ import {
   updateMockCartItems,
 } from "./store";
 import { mockProducts } from "./data";
+import { handleUnhandledRequest } from "./enableMocking";
 
 beforeEach(() => resetMockData());
 
 describe("MSW 데모 상태", () => {
-  test("상품 응답에 가격, 리뷰, 배송 및 적립 혜택 정보를 포함한다", () => {
+  test("상품 응답 정보와 fail-closed 요청 정책을 유지한다", () => {
     expect(mockProducts).toHaveLength(15);
 
     mockProducts.forEach((product) => {
@@ -27,6 +28,23 @@ describe("MSW 데모 상태", () => {
       );
       expect(product.originalPrice).toBeGreaterThan(product.price);
     });
+
+    const apiPrint = { error: jest.fn(), warning: jest.fn() };
+    const assetPrint = { error: jest.fn(), warning: jest.fn() };
+
+    handleUnhandledRequest(
+      { url: "http://localhost/api/not-registered" },
+      apiPrint
+    );
+    handleUnhandledRequest(
+      { url: "http://localhost/assets/product.png" },
+      assetPrint
+    );
+
+    expect(apiPrint.error).toHaveBeenCalledTimes(1);
+    expect(apiPrint.warning).not.toHaveBeenCalled();
+    expect(assetPrint.error).not.toHaveBeenCalled();
+    expect(assetPrint.warning).not.toHaveBeenCalled();
   });
 
   test("상품 옵션을 장바구니에 추가하고 수량을 변경한다", () => {

@@ -106,4 +106,8 @@ export const handlers = [
     const order = getMockOrder(params.id);
     return order ? success(order) : error(404, "주문 내역을 찾을 수 없습니다.");
   }),
+
+  http.all(`${API_PATH}/*`, ({ request }) =>
+    error(501, `지원하지 않는 API 요청입니다: ${request.method}`)
+  ),
 ];
