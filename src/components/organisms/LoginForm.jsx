@@ -8,7 +8,6 @@ import { setAuthToken } from "../../utils/localStorage";
 import { Link, useNavigate } from 'react-router-dom';
 import Title from "../atoms/Title";
 import logoKakao from "../../assets/logoKakao.png";
-import { DEMO_MODE } from "../../config/runtime";
 import {
     isValidAuthForm,
     validateAuthField,
@@ -105,17 +104,6 @@ const LoginForm = () => {
                 </div>
 
                 <form onSubmit={loginReq} noValidate>
-                    {DEMO_MODE && (
-                        <div className="mb-6 rounded-lg bg-[#fffbea] px-4 py-3 text-[13px] leading-5 text-gray-600" role="note">
-                            <p>프론트엔드 데모 모드에서는 아래 예시 계정으로 로그인할 수 있습니다.</p>
-                            <dl className="mt-2 grid grid-cols-[64px_1fr] gap-x-2 font-medium text-gray-800">
-                                <dt>아이디</dt>
-                                <dd>test@test.com</dd>
-                                <dt>비밀번호</dt>
-                                <dd>test1234!</dd>
-                            </dl>
-                        </div>
-                    )}
                     <InputGroup
                         id="email"
                         name="email"

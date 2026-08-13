@@ -110,10 +110,10 @@ const MainProductTemplate = () => {
         <Container>
             {isLoading ? <CardSkeleton /> : filteredProductList.length > 0 ? (
               <>
-                <div className="mx-auto max-w-[1200px] px-4 pt-10 sm:px-6">
+                <div className="mx-auto max-w-[1200px] px-4 pt-6 sm:px-6">
                   <p className="text-sm font-semibold text-yellow-600">오늘의 발견</p>
                   <div className="mt-1 flex flex-wrap items-end justify-between gap-2">
-                    <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">
+                    <h1 className="text-2xl font-bold tracking-tight">
                       지금 인기 있는 상품
                     </h1>
                     <span className="text-sm text-gray-500">

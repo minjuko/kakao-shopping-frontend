@@ -154,8 +154,10 @@ const GNB = () => {
           ) : (
             <>
               <Link
-                className={`rounded-full px-3 py-2 font-medium hover:bg-gray-100 ${
-                  location.pathname === `${staticServerUri}/login` ? "bg-gray-100" : ""
+                className={`rounded-full border bg-white px-4 py-2 font-semibold text-gray-700 transition focus:outline-none focus:ring-2 focus:ring-yellow-400 ${
+                  location.pathname === `${staticServerUri}/login`
+                    ? "border-gray-900 bg-gray-50 text-gray-900"
+                    : "border-gray-300 hover:border-gray-400 hover:bg-gray-50"
                 }`}
                 to={staticServerUri + "/login"}
                 aria-current={location.pathname === `${staticServerUri}/login` ? "page" : undefined}

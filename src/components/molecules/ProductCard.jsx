@@ -10,7 +10,7 @@ const ProductContainer = styled(Card)`
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  row-gap: 16px;
+  row-gap: 12px;
 `;
 
 const ImageContainer = styled.div`
