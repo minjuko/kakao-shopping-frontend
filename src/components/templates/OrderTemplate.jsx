@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { comma } from "../../utils/convert";
 import { order } from "../../services/order";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { getCart } from "../../services/cart";
 import { queryKeys } from "../../services/queryKeys";
@@ -9,6 +9,7 @@ import useApiErrorHandler from "../../hooks/useApiErrorHandler";
 import Loader from "../atoms/Loader";
 import QueryStatus from "../atoms/QueryStatus";
 import { calculateCartTotal } from "../../utils/cart";
+import useQueryAuthRecovery from "../../hooks/useQueryAuthRecovery";
 
 const staticServerUri = process.env.REACT_APP_PATH || "";
 const demoShippingAddress = {
@@ -48,13 +49,10 @@ const OrderTemplate = () => {
    * 2. 네트워크 및 서버 오류: 주문 정보 조회 실패 상태를 표시한다.
    * 3. 정상 응답에 상품이 없는 경우: 주문할 상품이 없다는 상태를 표시한다.
    */
-  const { data, isLoading, isError } = useQuery(queryKeys.cart, getCart);
+  const { data, error, isLoading, isError } = useQuery(queryKeys.cart, getCart);
+  useQueryAuthRecovery(error);
   const { products = [] } = data ?? {};
-  const location = useLocation();
-  const selectedProductIds = location.state?.selectedProductIds;
-  const orderProducts = Array.isArray(selectedProductIds)
-    ? products.filter((product) => selectedProductIds.includes(product.id))
-    : products;
+  const orderProducts = products.filter((product) => product.carts.length > 0);
   const totalPrice = calculateCartTotal(orderProducts);
   const hasOrderItems = orderProducts.some((product) =>
     product.carts.some((cart) => cart.quantity > 0)
@@ -273,13 +271,7 @@ const OrderTemplate = () => {
               }
 
               setFeedbackMessage("");
-              const selectedCartIds = orderProducts.flatMap((product) =>
-                product.carts
-                  .filter((cart) => cart.quantity > 0)
-                  .map((cart) => cart.id)
-              );
-
-              mutate({ cartIds: selectedCartIds }, {
+              mutate(null, {
                 onSuccess: async (res) => {
                   await queryClient.invalidateQueries(queryKeys.cart);
                   const id = res.id;
@@ -287,7 +279,7 @@ const OrderTemplate = () => {
                 },
               });
             }}
-            disabled={isOrdering}
+            disabled={!agreePayment || !agreePolicy || isOrdering}
             className={`mt-4 w-full rounded-xl p-4 font-bold ${
               agreePayment && agreePolicy && !isOrdering ? "bg-yellow-300 hover:bg-yellow-400" : "bg-gray-200 text-gray-500"
             }`}

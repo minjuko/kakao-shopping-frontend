@@ -8,6 +8,7 @@ import Button from "../atoms/Button";
 import { queryKeys } from "../../services/queryKeys";
 import Loader from "../atoms/Loader";
 import QueryStatus from "../atoms/QueryStatus";
+import useQueryAuthRecovery from "../../hooks/useQueryAuthRecovery";
 
 const staticServerUri = process.env.REACT_APP_PATH || "";
 
@@ -20,10 +21,11 @@ const OrderSuccessTemplate = () => {
    * 2. 404: 존재하지 않는 주문 번호임을 조회 실패 상태로 안내한다.
    * 3. 네트워크 및 서버 오류: 주문 결과 조회 실패 상태를 표시한다.
    */
-  const { data, isLoading, isError } = useQuery(
+  const { data, error, isLoading, isError } = useQuery(
     queryKeys.order(id),
     () => getOrderFromId(id)
   );
+  useQueryAuthRecovery(error);
 
   const navigate = useNavigate();
 

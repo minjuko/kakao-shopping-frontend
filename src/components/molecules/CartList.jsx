@@ -18,6 +18,7 @@ import {
   updateCartDataQuantity,
   updateCartItemQuantity,
 } from "../../utils/cart";
+import useQueryAuthRecovery from "../../hooks/useQueryAuthRecovery";
 
 const staticServerUri = process.env.REACT_APP_PATH || "";
 
@@ -28,16 +29,17 @@ const CartList = () => {
    * 2. 네트워크 및 서버 오류: 장바구니 조회 실패 상태를 표시한다.
    * 3. 정상 응답에 상품이 없는 경우: 장바구니가 비었다는 상태를 표시한다.
    */
-  const { data, isLoading, isError } = useQuery(queryKeys.cart, getCart);
+  const { data, error, isLoading, isError } = useQuery(queryKeys.cart, getCart);
+  useQueryAuthRecovery(error);
   const queryClient = useQueryClient();
 
   const navigate = useNavigate();
   const handleApiError = useApiErrorHandler();
 
   const [cartItems, setCartItems] = useState([]);
-  const [selectedProductIds, setSelectedProductIds] = useState([]);
   const [feedbackMessage, setFeedbackMessage] = useState("");
-  const hasInitializedSelection = useRef(false);
+  const updatingCartIdsRef = useRef(new Set());
+  const [updatingCartIds, setUpdatingCartIds] = useState([]);
 
   /**
    * 장바구니 수정 API 에러 캐칭 시나리오
@@ -83,7 +85,11 @@ const CartList = () => {
         setCartItems(updatedCart.products);
       }
     },
-    onSettled: () => queryClient.invalidateQueries(queryKeys.cart),
+    onSettled: (_data, _error, [update]) => {
+      updatingCartIdsRef.current.delete(update.cartId);
+      setUpdatingCartIds(Array.from(updatingCartIdsRef.current));
+      queryClient.invalidateQueries(queryKeys.cart);
+    },
   });
 
   useLayoutEffect(() => {
@@ -91,32 +97,25 @@ const CartList = () => {
       return;
     }
     setCartItems(data.products);
-    setSelectedProductIds((previousIds) => {
-      const availableIds = data.products
-        .filter((product) => product.carts.some((cart) => cart.quantity > 0))
-        .map((product) => product.id);
-      const remainingIds = previousIds.filter((id) => availableIds.includes(id));
-
-      if (!hasInitializedSelection.current) {
-        hasInitializedSelection.current = true;
-        return availableIds;
-      }
-
-      if (availableIds.length === 1) {
-        return availableIds;
-      }
-
-      return remainingIds;
-    });
   }, [data]);
 
   const handleOnChangeCount = (cartId, quantity) => {
+    if (updatingCartIdsRef.current.has(cartId)) {
+      return;
+    }
+    updatingCartIdsRef.current.add(cartId);
+    setUpdatingCartIds(Array.from(updatingCartIdsRef.current));
     setFeedbackMessage("");
     setCartItems((prev) => updateCartItemQuantity(prev, cartId, quantity));
     mutate([{ cartId, quantity }]);
   };
 
   const handleOnDeleteOption = (cartId) => {
+    if (updatingCartIdsRef.current.has(cartId)) {
+      return;
+    }
+    updatingCartIdsRef.current.add(cartId);
+    setUpdatingCartIds(Array.from(updatingCartIdsRef.current));
     setFeedbackMessage("");
     setCartItems((prev) => updateCartItemQuantity(prev, cartId, 0));
     mutate([{ cartId, quantity: 0 }]);
@@ -125,24 +124,9 @@ const CartList = () => {
   const handleOrder = () => {
     setFeedbackMessage("");
 
-    if (selectedProductIds.length === 0) {
-      setFeedbackMessage("주문할 상품을 선택해주세요.");
-      return;
-    }
-
     if (!isUpdating) {
-      navigate(staticServerUri + "/order", {
-        state: { selectedProductIds },
-      });
+      navigate(staticServerUri + "/order");
     }
-  };
-
-  const handleSelectProduct = (productId, checked) => {
-    setSelectedProductIds((previousIds) =>
-      checked
-        ? [...new Set([...previousIds, productId])]
-        : previousIds.filter((id) => id !== productId)
-    );
   };
 
   if (isLoading) {
@@ -171,11 +155,7 @@ const CartList = () => {
   const visibleCartItems = cartItems.filter((item) =>
     item.carts.some((cart) => cart.quantity > 0)
   );
-  const showProductSelection = visibleCartItems.length >= 2;
-  const selectedCartItems = visibleCartItems.filter((item) =>
-    selectedProductIds.includes(item.id)
-  );
-  const selectedTotal = calculateCartTotal(selectedCartItems);
+  const selectedTotal = calculateCartTotal(visibleCartItems);
 
   return (
     <Container className="mx-auto w-full max-w-[1200px] px-4 py-8 sm:px-6 lg:py-10">
@@ -197,26 +177,6 @@ const CartList = () => {
 
       <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_340px] lg:gap-8">
         <div className="space-y-4">
-          {showProductSelection && (
-            <label className="flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm font-semibold">
-              <input
-                type="checkbox"
-                className="h-5 w-5 accent-yellow-400"
-                checked={selectedProductIds.length === visibleCartItems.length}
-                onChange={(event) => {
-                  setSelectedProductIds(
-                    event.target.checked
-                      ? visibleCartItems.map((item) => item.id)
-                      : []
-                  );
-                }}
-              />
-              전체 상품 선택
-              <span className="ml-auto text-xs font-normal text-gray-500">
-                {selectedProductIds.length}/{visibleCartItems.length}
-              </span>
-            </label>
-          )}
           {Array.isArray(visibleCartItems) &&
             visibleCartItems
               .map((item) => (
@@ -225,9 +185,7 @@ const CartList = () => {
                   item={item}
                   onChange={handleOnChangeCount}
                   onDelete={handleOnDeleteOption}
-                  selected={selectedProductIds.includes(item.id)}
-                  showSelection={showProductSelection}
-                  onSelect={handleSelectProduct}
+                  updatingCartIds={updatingCartIds}
                 />
               ))}
         </div>
@@ -254,7 +212,7 @@ const CartList = () => {
           <Button
             className="mt-4 h-14 w-full rounded-xl bg-yellow-300 p-3 text-center font-bold hover:bg-yellow-400"
             onClick={handleOrder}
-            disabled={isUpdating || selectedProductIds.length === 0}
+            disabled={isUpdating}
           >
             <span>
               {isUpdating

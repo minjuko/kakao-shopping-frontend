@@ -13,6 +13,7 @@ const CartItem = ({
   selected = true,
   showSelection = false,
   onSelect,
+  updatingCartIds = [],
 }) => {
   return (
     <Box className={`w-full rounded-2xl border bg-white p-3 shadow-md transition sm:p-4 ${
@@ -50,6 +51,7 @@ const CartItem = ({
               <div className="flex flex-wrap items-center gap-2">
                 <Counter
                   initCount={cart.quantity}
+                  disabled={updatingCartIds.includes(cart.id)}
                   onIncrease={(count) => {
                     onChange(cart.id, count);
                   }}
@@ -59,6 +61,7 @@ const CartItem = ({
                 ></Counter>
                 <DeleteButton
                   label={cart.option.optionName}
+                  disabled={updatingCartIds.includes(cart.id)}
                   onClick={() => {
                     onDelete(cart.id)
                   }}

@@ -63,7 +63,14 @@ const renderOrderTemplate = (initialEntry = "/order") => {
 describe("OrderTemplate", () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    localStorage.clear();
+    jest.spyOn(window, "alert").mockImplementation(() => {});
+    jest.spyOn(console, "error").mockImplementation(() => {});
     getCart.mockResolvedValue(cartData);
+  });
+
+  afterEach(() => {
+    jest.restoreAllMocks();
   });
 
   test("배송지를 실제 정보가 아닌 예시 데이터로 안내한다", async () => {
@@ -76,13 +83,31 @@ describe("OrderTemplate", () => {
     ).toBeInTheDocument();
   });
 
-  test("필수 동의 없이 결제하면 화면에 오류를 표시한다", async () => {
+  test("필수 동의 상태에 따라 결제 버튼을 활성화한다", async () => {
     renderOrderTemplate();
 
-    fireEvent.click(await screen.findByRole("button", { name: "결제하기" }));
+    const button = await screen.findByRole("button", { name: "결제하기" });
+    expect(button).toBeDisabled();
 
-    expect(screen.getByRole("alert")).toHaveTextContent("모든 항목에 동의해야 합니다.");
+    fireEvent.click(screen.getByLabelText("구매조건 확인 및 결제 진행 동의"));
+    expect(button).toBeDisabled();
+
+    fireEvent.click(screen.getByLabelText("개인정보 제 3자 제공 동의"));
+    expect(button).toBeEnabled();
+
+    fireEvent.click(screen.getByLabelText("개인정보 제 3자 제공 동의"));
+    expect(button).toBeDisabled();
+    fireEvent.click(button);
     expect(order).not.toHaveBeenCalled();
+  });
+
+  test("전체 동의는 결제 버튼을 활성화한다", async () => {
+    renderOrderTemplate();
+    const button = await screen.findByRole("button", { name: "결제하기" });
+
+    fireEvent.click(screen.getByLabelText("전체 동의"));
+
+    expect(button).toBeEnabled();
   });
 
   test("수량이 0인 옵션은 주문 상품에서 제외한다", async () => {
@@ -139,11 +164,11 @@ describe("OrderTemplate", () => {
     fireEvent.click(await screen.findByLabelText("전체 동의"));
     fireEvent.click(screen.getByRole("button", { name: "결제하기" }));
 
-    await waitFor(() => expect(order).toHaveBeenCalledWith({ cartIds: [10] }));
+    await waitFor(() => expect(order).toHaveBeenCalledWith(null));
     await waitFor(() => expect(mockNavigate).toHaveBeenCalledWith("/orders/complete/99"));
   });
 
-  test("장바구니에서 선택한 상품만 주문 대상으로 표시한다", async () => {
+  test("navigation product selection과 무관하게 장바구니 전체를 표시한다", async () => {
     getCart.mockResolvedValue({
       products: [
         cartData.products[0],
@@ -168,7 +193,55 @@ describe("OrderTemplate", () => {
     });
 
     expect(await screen.findByText("선택 상품 선택 옵션")).toBeInTheDocument();
-    expect(screen.queryByText("테스트 상품 기본 옵션")).not.toBeInTheDocument();
-    expect(screen.getAllByText("5,000원")).toHaveLength(3);
+    expect(screen.getByText("테스트 상품 기본 옵션")).toBeInTheDocument();
+    expect(screen.getAllByText("7,000원")).toHaveLength(2);
+  });
+
+  test("navigation cart selection과 무관하게 장바구니 전체를 표시한다", async () => {
+    getCart.mockResolvedValue({
+      products: [{
+        ...cartData.products[0],
+        carts: [
+          cartData.products[0].carts[0],
+          {
+            id: 11,
+            quantity: 1,
+            option: { optionName: "바로 구매 옵션", price: 3000 },
+          },
+        ],
+      }],
+      totalPrice: 5000,
+    });
+
+    renderOrderTemplate({
+      pathname: "/order",
+      state: { selectedCartIds: [11] },
+    });
+
+    expect(await screen.findByText("테스트 상품 바로 구매 옵션")).toBeInTheDocument();
+    expect(screen.getByText("테스트 상품 기본 옵션")).toBeInTheDocument();
+    expect(screen.getAllByText("5,000원")).toHaveLength(2);
+  });
+
+  test("주문 요청 중에는 결제 버튼을 비활성화한다", async () => {
+    order.mockImplementation(() => new Promise(() => {}));
+    renderOrderTemplate();
+    fireEvent.click(await screen.findByLabelText("전체 동의"));
+    const button = screen.getByRole("button", { name: "결제하기" });
+
+    fireEvent.click(button);
+
+    await waitFor(() => expect(button).toBeDisabled());
+    expect(order).toHaveBeenCalledTimes(1);
+  });
+
+  test("order query 401이면 token을 제거하고 로그인으로 이동한다", async () => {
+    localStorage.setItem("user", JSON.stringify({ value: "Bearer invalid" }));
+    getCart.mockRejectedValue({ response: { status: 401 } });
+
+    renderOrderTemplate();
+
+    await waitFor(() => expect(localStorage.getItem("user")).toBeNull());
+    expect(mockNavigate).toHaveBeenCalledWith("/login");
   });
 });

@@ -6,6 +6,7 @@ const Counter = ({
   max = 99,
   onIncrease = () => {},
   onDecrease = () => {},
+  disabled = false,
 }) => {
   const [count, setCount] = useState(initCount);
 
@@ -35,7 +36,7 @@ const Counter = ({
           type="button"
           className="border w-6 disabled:text-gray-300"
           aria-label="수량 줄이기"
-          disabled={count <= min}
+          disabled={disabled || count <= min}
           onClick={handleOnDecrease}
         >
           -
@@ -51,7 +52,7 @@ const Counter = ({
           type="button"
           className="border w-6 disabled:text-gray-300"
           aria-label="수량 늘리기"
-          disabled={count >= max}
+          disabled={disabled || count >= max}
           onClick={handleOnIncrease}
         >
           +

@@ -18,6 +18,26 @@ const wrapper = ({ children }) => {
 };
 
 describe("useApiErrorHandler", () => {
+  beforeEach(() => {
+    localStorage.clear();
+    jest.spyOn(window, "alert").mockImplementation(() => {});
+  });
+
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
+  test("mutation 401 처리 시 저장된 token을 제거한다", () => {
+    localStorage.setItem("user", JSON.stringify({ value: "Bearer invalid" }));
+    const { result } = renderHook(() => useApiErrorHandler(), { wrapper });
+
+    act(() => {
+      result.current({ response: { status: 401 } });
+    });
+
+    expect(localStorage.getItem("user")).toBeNull();
+  });
+
   test("서버 오류 메시지를 화면 상태 callback에 전달한다", () => {
     const onMessage = jest.fn();
     const { result } = renderHook(() => useApiErrorHandler(), { wrapper });
