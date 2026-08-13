@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import fallbackImage from "../../assets/image1.png";
 
 /**
  *
@@ -10,10 +11,24 @@ import React from "react";
  * @returns {JSX.Element} - Photo Component
  */
 const Photo = ({ className, pictureClassName = "", src, alt }) => {
+  const [imageSrc, setImageSrc] = useState(src);
+
+  useEffect(() => {
+    setImageSrc(src);
+  }, [src]);
+
+  const handleError = (event) => {
+    if (imageSrc === fallbackImage) {
+      event.currentTarget.onerror = null;
+      return;
+    }
+    setImageSrc(fallbackImage);
+  };
+
   return (
     <picture className={`block w-full ${pictureClassName}`}>
-      <source media="(min-width: 650px)" srcSet={src} />
-      <img src={src} alt={alt} className={className} />
+      <source media="(min-width: 650px)" srcSet={imageSrc} />
+      <img src={imageSrc} alt={alt} className={className} onError={handleError} />
     </picture>
   );
 };
