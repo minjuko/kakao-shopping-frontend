@@ -50,8 +50,6 @@ export const handlers = [
     return success(null, { headers: { Authorization: DEMO_TOKEN } });
   }),
 
-  http.post(`${API_PATH}/check`, () => success({ available: true })),
-
   http.get(`${API_PATH}/carts`, async ({ request }) => {
     await delay(200);
     if (!requireAuth(request)) {
@@ -91,7 +89,10 @@ export const handlers = [
     }
 
     const payload = await request.json();
-    const result = saveMockOrder(payload.cartIds);
+    if (payload !== null) {
+      return error(400, "잘못된 주문 요청입니다.");
+    }
+    const result = saveMockOrder();
     if (result.error) {
       return error(result.error.status, result.error.message);
     }

@@ -172,7 +172,7 @@ const OptionColumn = ({ product }) => {
         <Button
           className="h-12 flex-1 rounded-xl bg-yellow-300 p-2 font-bold hover:bg-yellow-400 disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-500"
           disabled={selectedOptions.length === 0 || isLoading}
-          onClick={() => handleAddSelectedOptions("/order", "purchase")}
+          onClick={() => window.alert("주문 페이지로 이동합니다.")}
         >
           {isLoading && pendingAction === "purchase" ? "구매 준비 중..." : "구매하기"}
         </Button>

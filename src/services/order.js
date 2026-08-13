@@ -6,8 +6,8 @@ import { instance } from "./index";
  */
 
 
-export const order = (payload) => {
-  return instance.post(`/orders/save`, payload).then(({ data }) => data.response);
+export const order = () => {
+  return instance.post(`/orders/save`, null).then(({ data }) => data.response);
 };
 
 export const getOrderFromId = (id) => {

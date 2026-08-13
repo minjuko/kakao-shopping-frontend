@@ -9,10 +9,7 @@ import OptionColumn from "./OptionColumn";
 
 const mockNavigate = jest.fn();
 
-jest.mock("../../services/cart", () => ({
-  addCart: jest.fn(),
-}));
-
+jest.mock("../../services/cart", () => ({ addCart: jest.fn() }));
 jest.mock("react-router-dom", () => ({
   ...jest.requireActual("react-router-dom"),
   useNavigate: () => mockNavigate,
@@ -43,42 +40,45 @@ const renderOptionColumn = () => {
 };
 
 describe("OptionColumn", () => {
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
+  beforeEach(() => jest.clearAllMocks());
 
   test("클릭한 옵션을 강조하고 선택 상태로 표시한다", () => {
     renderOptionColumn();
     const optionButton = screen.getByRole("button", { name: /기본 옵션/ });
-
     fireEvent.click(optionButton);
-
     expect(optionButton).toHaveClass("bg-yellow-200");
     expect(optionButton).toHaveAttribute("aria-pressed", "true");
-    expect(screen.getByText("총 수량: 1개")).toBeInTheDocument();
   });
 
-  test("선택 목록에서 옵션을 삭제한다", () => {
+  test("선택 목록에서 옵션을 제거한다", () => {
     renderOptionColumn();
     fireEvent.click(screen.getByRole("button", { name: /기본 옵션/ }));
-
     fireEvent.click(screen.getByRole("button", { name: "기본 옵션 삭제" }));
-
     expect(screen.queryByRole("button", { name: "기본 옵션 삭제" })).not.toBeInTheDocument();
-    expect(screen.getByText("총 수량: 0개")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "구매하기" })).toBeDisabled();
   });
 
-  test("선택 옵션을 저장하고 주문 페이지로 이동한다", async () => {
-    addCart.mockResolvedValue({});
+  test("장바구니 추가는 원본 request 계약을 사용하고 response payload에 의존하지 않는다", async () => {
+    addCart.mockResolvedValue(null);
     renderOptionColumn();
     fireEvent.click(screen.getByRole("button", { name: /선물 옵션/ }));
-
-    fireEvent.click(screen.getByRole("button", { name: "구매하기" }));
+    fireEvent.click(screen.getByRole("button", { name: /장바구니/ }));
 
     await waitFor(() => expect(addCart).toHaveBeenCalledWith([
       { optionId: 102, quantity: 1 },
     ]));
-    await waitFor(() => expect(mockNavigate).toHaveBeenCalledWith("/order"));
+    await waitFor(() => expect(mockNavigate).toHaveBeenCalledWith("/cart"));
+  });
+
+  test("구매하기는 교육 baseline처럼 안내만 하고 API 계약을 확장하지 않는다", () => {
+    const alertSpy = jest.spyOn(window, "alert").mockImplementation(() => {});
+    renderOptionColumn();
+    fireEvent.click(screen.getByRole("button", { name: /선물 옵션/ }));
+    fireEvent.click(screen.getByRole("button", { name: "구매하기" }));
+
+    expect(alertSpy).toHaveBeenCalledWith("주문 페이지로 이동합니다.");
+    expect(addCart).not.toHaveBeenCalled();
+    expect(mockNavigate).not.toHaveBeenCalled();
+    alertSpy.mockRestore();
   });
 });

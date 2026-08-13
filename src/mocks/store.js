@@ -87,19 +87,9 @@ export const updateMockCartItems = (updates) => {
   return getMockCart();
 };
 
-export const saveMockOrder = (selectedCartIds) => {
-  const selectedIdSet = Array.isArray(selectedCartIds)
-    ? new Set(selectedCartIds)
-    : null;
+export const saveMockOrder = () => {
   const cart = getMockCart();
-  const products = cart.products
-    .map((product) => ({
-      ...product,
-      carts: product.carts.filter(
-        (item) => !selectedIdSet || selectedIdSet.has(item.id)
-      ),
-    }))
-    .filter((product) => product.carts.length > 0);
+  const products = cart.products;
 
   if (products.length === 0) {
     return { error: { status: 400, message: "주문할 상품이 없습니다." } };
@@ -125,9 +115,7 @@ export const saveMockOrder = (selectedCartIds) => {
     0
   );
   orders.set(id, { id, products: orderProducts, totalPrice });
-  cartItems = selectedIdSet
-    ? cartItems.filter((item) => !selectedIdSet.has(item.id))
-    : [];
+  cartItems = [];
   return { response: { id } };
 };
 

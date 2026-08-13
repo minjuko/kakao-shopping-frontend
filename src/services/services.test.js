@@ -60,15 +60,14 @@ describe("API 서비스 응답 변환", () => {
   });
 
   test("주문 생성 결과와 주문 상세의 response 데이터만 반환한다", async () => {
-    const orderPayload = { items: [] };
     const savedOrder = { id: 10 };
     const orderDetail = { id: 10, products: [], totalPrice: 0 };
     instance.post.mockResolvedValue({ data: { response: savedOrder } });
     instance.get.mockResolvedValue({ data: { response: orderDetail } });
 
-    await expect(order(orderPayload)).resolves.toEqual(savedOrder);
+    await expect(order()).resolves.toEqual(savedOrder);
     await expect(getOrderFromId(10)).resolves.toEqual(orderDetail);
-    expect(instance.post).toHaveBeenCalledWith("/orders/save", orderPayload);
+    expect(instance.post).toHaveBeenCalledWith("/orders/save", null);
     expect(instance.get).toHaveBeenCalledWith("/orders/10");
   });
 });
