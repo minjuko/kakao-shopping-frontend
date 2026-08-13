@@ -1,291 +1,222 @@
-# 카카오테크캠퍼스 2단계 프로젝트 > 카카오 쇼핑하기 
+# 카카오 쇼핑하기 React 프로젝트
 
-## 프로젝트 소개
-상품 탐색부터 장바구니, 주문 완료까지의 쇼핑 흐름을 구현한 React 프로젝트
-프론트엔드 학습 목적으로 제작한 클론 프로젝트
+Kakao Tech Campus Frontend 교육 과정에서 제공된 화면 설계서와 Backend REST API를 바탕으로 상품 탐색부터 장바구니, 주문 완료까지 구현한 프로젝트입니다.
 
-- React의 컴포넌트 설계와 상태 관리
-- Axios를 통한 백엔드 API 연결
-- TanStack React Query를 활용한 서버 상태 관리
-- 인증이 필요한 페이지의 라우팅
+주차별 Pull Request와 mentor code review를 거치며 React의 컴포넌트 책임, 상태 관리, 비동기 데이터 처리 방식을 학습했습니다. 교육 Backend가 종료된 뒤에는 기존 Frontend가 사용한 API 계약을 기준으로 MSW 환경을 구성해 주요 흐름을 다시 실행하고 검증할 수 있도록 정비했습니다.
 
-## 프로젝트 핵심
+**React · JavaScript · React Router · Redux Toolkit · TanStack Query · Axios · MSW**
+
+![카카오 쇼핑하기 메인 화면](./docs/assets/readme/01-main.png)
+
+## Project Overview
 
 | 항목 | 내용 |
 | --- | --- |
-| 담당 영역 | 프론트엔드 |
-| 주요 구현 | 인증, 상품 조회, 무한 스크롤, 옵션 선택, 장바구니, 주문 |
-| API | 교육 과정에서 제공한 REST API 명세 연동 |
-| 데모 환경 | MSW로 동일한 API 요청·응답 흐름 재현 |
-| 상태 관리 | Redux Toolkit, TanStack React Query |
-| 테스트 | Jest, React Testing Library |
+| 교육 과정 | Kakao Tech Campus Frontend |
+| 프로젝트 형태 | 주차별 React 과제로 진행한 Frontend 프로젝트 |
+| 개발 목적 | 제공된 화면 설계서와 REST API를 이용한 shopping flow 구현 및 React 학습 |
+| 구현 범위 | 상품 탐색, 인증, 옵션 선택, 장바구니, 교육용 주문 및 주문 완료 |
+| 개발 방식 | 주차별 Pull Request 제출과 mentor code review를 통한 개선 |
+| 현재 실행 환경 | 종료된 교육 Backend를 대신하는 stateful MSW Mock API |
 
-## 기술 스택
-
-| 구분 | 기술 |
-| --- | --- |
-| Frontend | React 18, JavaScript |
-| Routing | React Router 6 |
-| Client State | Redux Toolkit, React Redux |
-| Server State | TanStack React Query 4 |
-| HTTP | Axios |
-| Mock API | MSW 2 |
-| Styling | Tailwind CSS, styled-components, CSS |
-| Test | Jest, React Testing Library |
-| Build | Create React App 5 |
-
-## React로 구현하며 학습한 내용
-
-### 1. 컴포넌트 기반 UI 설계
-
-- 화면을 `atoms`, `molecules`, `organisms`, `templates`, `pages` 단위로 분리했습니다.
-- 버튼, 입력창, 상품 카드처럼 반복되는 UI를 공통 컴포넌트로 구성했습니다.
-- 상품 목록, 상세, 장바구니, 주문 화면을 데이터와 UI 역할에 따라 나눴습니다.
-- props를 통해 공통 컴포넌트의 스타일과 동작을 확장할 수 있도록 설계했습니다.
-
-### 2. React Hooks를 이용한 상태와 사용자 입력 관리
-
-- `useState`로 폼 입력값, 검증 결과, 옵션 수량과 요청 상태를 관리했습니다.
-- 공통 입력 로직을 `useInput` Hook으로 분리했습니다.
-- `useEffect`를 이용해 무한 스크롤 요청과 화면 상태 변화를 처리했습니다.
-- 요청 중 버튼 비활성화와 중복 제출 방지 로직을 적용했습니다.
-
-### 3. 클라이언트 상태와 서버 상태 분리
-
-- 로그인 토큰처럼 애플리케이션 전역에서 사용하는 상태는 Redux Toolkit으로 관리했습니다.
-- 상품, 장바구니, 주문처럼 API에서 가져오는 데이터는 React Query로 관리했습니다.
-- Query key를 기능별로 정의해 캐시 식별 방식을 통일했습니다.
-- mutation 성공 후 장바구니 데이터를 갱신해 서버 응답과 화면 상태를 동기화했습니다.
-
-### 4. React Router를 이용한 사용자 흐름 구성
-
-- 상품 ID와 주문 ID를 URL parameter로 전달해 상세 화면을 구성했습니다.
-- 인증 여부를 확인하는 `RequiredAuthLayout`으로 장바구니와 주문 경로를 보호했습니다.
-- 로그인, 회원가입, 로그아웃 완료 상태는 navigation state로 전달해 토스트를 한 번만 표시했습니다.
-- 검색어와 카테고리는 query string으로 관리해 URL과 화면 상태를 연결했습니다.
-
-### 5. 무한 스크롤과 비동기 화면 상태
-
-- `useInfiniteQuery`로 페이지별 상품 데이터를 누적했습니다.
-- Intersection Observer가 화면 하단을 감지하면 다음 페이지를 요청하도록 구현했습니다.
-- 로딩, 추가 로딩, 빈 결과, 일부 페이지 요청 실패 상태를 각각 구분해 표시했습니다.
-- 검색 중에는 필요한 페이지를 추가 조회한 후 프론트엔드에서 결과를 필터링합니다.
-
-## API 연동 구조
+## Core User Flow
 
 ```mermaid
 flowchart LR
-    UI[React Component] --> Q[React Query / Mutation]
-    Q --> S[Service Function]
-    S --> A[Axios Instance]
-    A --> API[Backend API]
-    A -. Demo Mode .-> MSW[MSW Handler]
-    API --> S
-    MSW --> S
-    S --> Q
-    Q --> UI
+    Main[상품 목록] --> Detail[상품 상세]
+    Detail --> Option[옵션 선택]
+    Option --> Add[장바구니 담기]
+    Add --> Cart[장바구니]
+    Cart --> Order[주문 확인]
+    Order --> Complete[주문 완료]
 ```
 
-### Axios 공통 설정
+핵심 구매 흐름은 상품 상세에서 옵션을 선택해 장바구니에 담은 뒤, 장바구니 전체를 확인하고 교육용 주문을 생성하는 과정입니다.
 
-- `/api`를 기준으로 공통 Axios instance를 생성했습니다.
-- 요청 interceptor에서 저장된 인증 토큰을 Authorization header에 추가합니다.
-- 모든 요청에 timeout과 JSON content type을 공통 적용했습니다.
+## Key Features
 
-### Service 계층
+### Product Discovery
 
-컴포넌트에서 Axios를 직접 호출하지 않고 기능별 service 함수로 분리했습니다.
+- 상품 목록과 가격·할인·배송 정보 표시
+- URL query string을 이용한 검색과 category filter
+- `useInfiniteQuery`와 Intersection Observer를 이용한 page 단위 추가 조회
+- 최초 loading, 추가 loading, 빈 결과, 마지막 page, request error 상태 구분
+
+### Product Detail
+
+- URL의 상품 ID를 이용한 상세 정보 조회
+- option 선택과 중복 선택 방지
+- option별 수량 변경과 최소·최대 수량 제한
+- 선택 option의 합계 계산 및 장바구니 추가
+
+### Authentication
+
+- login, signup, logout과 form validation
+- Redux Toolkit으로 애플리케이션 인증 상태 관리
+- localStorage를 이용한 새로고침 후 token 복원
+- `RequiredAuthLayout`을 이용한 cart·order route 보호
+
+### Cart & Order
+
+- cart 조회, option별 수량 변경과 삭제, 총액 계산
+- cart option별 수량 변경과 실패 시 이전 수량 복구
+- 필수 동의 완료 후 교육용 주문 생성
+- 주문 ID를 이용한 주문 완료 결과 조회
+
+## Tech Stack
+
+| Category | Technology | Role |
+| --- | --- | --- |
+| UI | React 18.2, JavaScript | Component 기반 화면 및 interaction 구현 |
+| Routing | React Router 6 | 화면 전환, URL parameter, protected route |
+| Client State | Redux Toolkit 1.9.5 | 인증 상태 공유 |
+| Server State | TanStack React Query 4.32 | Query, mutation, cache lifecycle 관리 |
+| HTTP | Axios | 공통 instance, timeout, Authorization header |
+| Mock API | MSW 2.15 | 종료된 교육 Backend의 주요 API 흐름 재현 |
+| Styling | Tailwind CSS 3, styled-components 6, CSS | 화면 layout과 component styling |
+| Test | Jest, React Testing Library | 사용자 interaction과 API contract 회귀 검증 |
+| Build | Create React App 5 | 개발 서버와 production build |
+
+## Implementation & Learning
+
+### Component Responsibility
+
+Atomic Design의 component 계층 개념을 참고해 `atoms`, `molecules`, `organisms`, `templates`, `pages`로 화면을 나눴습니다. 명칭 자체보다 state와 event를 어느 component가 소유해야 하는지에 초점을 맞추고, 입력·수량·오류 UI처럼 반복되는 책임을 component와 hook, utility로 분리했습니다.
+
+### Client State와 Server State 분리
+
+여러 화면이 함께 사용하는 인증 상태는 Redux Toolkit으로 관리하고, 상품·cart·order처럼 API에서 조회하는 데이터는 React Query가 담당하도록 구분했습니다. localStorage는 인증 상태 자체를 대체하지 않고 새로고침 후 token을 복원하는 persistent storage로 사용했습니다.
+
+### Infinite Query와 화면 상태
+
+상품 목록을 page 단위로 누적하고 observer가 하단에 진입했을 때 다음 page를 요청했습니다. 최초 loading과 추가 loading을 나누고, 검색·category filter 중에는 필요한 page를 조회한 뒤 client filtering을 적용하도록 구성했습니다.
+
+### Form과 Validation
+
+login과 signup의 입력 상태를 `useInput`으로 공통화하고, email·password·name·password confirmation 검증은 순수 utility로 분리했습니다. button click과 Enter submit이 동일한 form 흐름을 거치며, 중복 submit과 API error도 화면 상태로 처리합니다.
+
+## Code Review & Growth
+
+교육 과정에서는 기능 구현 후 Pull Request를 제출하고, 리뷰에서 받은 질문과 제안을 후속 학습과 구현에 반영했습니다. 아래 사례는 실제 교육 PR에서 확인한 학습 과정입니다.
+
+### 1. Form State & Validation — [PR #71](https://github.com/Kakao-tech-campus-FE/step2-FE-kakao-shop/pull/71)
+
+- **Before:** `RegisterForm`에 입력값과 validation, error state 책임이 집중되어 있었습니다.
+- **Review:** 관련 입력 상태는 Custom Hook으로 묶고, 재사용 가능한 validation은 utility로 분리할 수 있다는 피드백을 받았습니다.
+- **Improvement:** 후속 구현에서 공통 입력 처리를 `useInput`으로, 검증 규칙을 validation utility로 분리했습니다.
+- **Learning:** form을 동작시키는 데서 그치지 않고 component state와 순수 검증 로직의 책임을 구분했습니다.
+
+### 2. Authentication State Responsibility — [PR #71](https://github.com/Kakao-tech-campus-FE/step2-FE-kakao-shop/pull/71)
+
+- **Before:** 로그인 상태가 `App` local state, localStorage, component props에 분산되어 있었습니다.
+- **Review:** 인증 상태를 전역에서 관리하고 Redux state를 UI 판단의 중심으로 활용하는 방향을 제안받았습니다.
+- **Improvement:** Redux Toolkit으로 인증 상태를 공유하고 localStorage는 새로고침 후 token 복원에 사용했습니다.
+- **Learning:** 화면 상태와 persistent storage의 역할을 구분하고 인증 상태의 소유자를 명확히 했습니다.
+
+### 3. React Query Cache Identity — [PR #197](https://github.com/Kakao-tech-campus-FE/step2-FE-kakao-shop/pull/197)
+
+- **Before:** 상품 상세 query에 고정된 `product` key를 사용했습니다.
+- **Review:** 상품 ID를 query key에 포함해 cache identity를 구분해야 한다는 피드백을 받았습니다.
+- **Improvement:** 후속 구현과 포트폴리오 정비를 거쳐 domain별 query key를 정의하고 상품·주문 ID를 key에 포함했습니다.
+- **Learning:** Query Key가 단순 이름이 아니라 server-state cache의 식별자라는 점을 이해했습니다.
+
+## Portfolio Refactoring — 종료된 교육 환경 복원
+
+포트폴리오 정비의 목적은 기능 확장이 아니라, 종료된 교육 환경에서도 기존 프로젝트를 실행하고 검증할 수 있게 복원하는 것이었습니다.
+
+### 실행 환경 복원
+
+교육 Backend를 더 이상 사용할 수 없어 상품, 인증, cart, order의 주요 API 흐름을 stateful MSW Mock으로 재현했습니다. Component가 Mock 전용 코드를 직접 호출하지 않고 기존 `React Query → service → Axios` 경계를 통과하면 MSW가 network request를 intercept합니다.
+
+### 교육 API 계약 보존
+
+공식 Backend 명세가 repository에 남아 있지 않아 교육 마지막 baseline의 Frontend 사용 방식을 근거로 endpoint, method, request와 response dependency를 다시 확인했습니다. 대표적으로 Mock 환경에서 확장됐던 `POST /api/orders/save`의 `{ cartIds }` request를 제거하고 교육 baseline의 `null` body로 복원했습니다.
+
+Mock에 맞춘 기능 확장보다 당시 Frontend가 실제 사용한 계약과 전체 cart 주문 흐름을 보존하는 것을 우선했습니다.
+
+### 핵심 흐름 안정화
+
+- Protected query의 `401` 인증 복구와 cart item별 mutation lock 적용
+- 상품 image fallback과 주문 동의 button의 실제 `disabled` 상태 보완
+- API contract 회귀 테스트와 desktop/mobile browser smoke로 핵심 흐름 재검증
+
+## Testing
+
+단순 rendering 수치보다 사용자 interaction과 API 계약의 회귀 방지에 초점을 맞췄습니다.
+
+- login·signup validation과 submit
+- protected query `401`의 인증 복구
+- cart optimistic update, rollback, item별 mutation lock
+- 주문 필수 동의와 중복 submit 방지
+- `POST /api/orders/save`의 original `null` request contract
+- MSW cart·order state 및 주문 완료 조회
+- 상품 image fallback
 
 ```text
-services
-├── index.js       # Axios instance와 interceptor
-├── product.js     # 상품 목록·상세 조회
-├── user.js        # 로그인·회원가입
-├── cart.js        # 장바구니 조회·추가·수정
-└── order.js       # 주문 생성·결과 조회
+18 test suites passed
+72 tests passed
+Production build passed
 ```
 
-API의 중첩된 응답은 service 계층에서 필요한 데이터만 반환하도록 정리해 컴포넌트가 HTTP 응답 구조에 직접 의존하지 않게 했습니다.
+## Screens
 
-### React Query 적용
+### Product Detail
 
-- `useQuery`: 상품 상세, 장바구니, 주문 결과 조회
-- `useInfiniteQuery`: 페이지 단위 상품 목록 조회
-- `useMutation`: 장바구니 추가·수정과 주문 생성
-- 캐시 갱신: mutation 성공 후 관련 Query 데이터를 갱신
+상품 정보와 option 선택, 수량, 합계를 한 화면에서 확인하고 선택한 option을 cart에 추가합니다.
 
-### 인증과 오류 처리
+![상품 상세 및 옵션 선택 화면](./docs/assets/readme/02-product-detail.png)
 
-- 로그인과 회원가입 응답의 토큰을 Redux와 localStorage에 저장합니다.
-- Axios interceptor가 인증이 필요한 API 요청에 토큰을 자동으로 포함합니다.
-- 토큰 만료, 네트워크 오류, 404와 업무 오류를 공통 오류 Hook에서 구분합니다.
-- 폼과 요청 오류는 주로 화면의 `role="alert"` 영역에 표시하고, 공통 인증 오류 등 일부 상황은 브라우저 alert로 안내합니다.
+### Cart
 
-### MSW 데모 API
+cart에 담긴 상품과 option을 확인하고 수량 변경, 삭제, 합계 계산 후 주문 화면으로 이동합니다.
 
-백엔드 없이도 전체 사용자 흐름을 확인할 수 있도록 실제 API 계약과 같은 endpoint와 응답 형식을 MSW로 재현했습니다.
+![장바구니 화면](./docs/assets/readme/05-cart.png)
 
-- 상품 목록과 상세 조회
-- 로그인과 회원가입
-- 장바구니 조회, 추가, 수량 변경
-- 주문 생성과 주문 결과 조회
-- 400, 401, 404 오류 응답
+### Order
 
-## 주요 기능
+현재 cart 전체와 예시 배송 정보, 결제수단, 필수 동의를 확인합니다. 실제 결제는 발생하지 않습니다.
 
-- 회원가입 후 자동 로그인 및 완료 토스트
-- 로그인, 로그아웃과 인증 상태 유지
-- 상품 검색과 카테고리 필터
-- 상품 목록 무한 스크롤
-- 상품 상세 정보와 옵션 선택
-- 옵션별 수량 변경 및 합계 계산
-- 장바구니 추가와 바로 구매
-- 장바구니 수량 변경과 상품 삭제
-- 주문 정보 확인과 결제 동의
-- 주문 생성과 주문 완료 결과 조회
-- 반응형 레이아웃과 키보드 focus 지원
+<img src="./docs/assets/readme/06-order-checked-full.png" alt="필수 동의를 완료한 주문 화면" width="900" />
 
-## 화면 구성
+### Order Complete
 
-### 1. 메인 페이지
+주문 API가 반환한 ID로 주문 결과를 조회하고 상품 option과 총 주문 금액을 표시합니다.
 
-![메인 페이지](./docs/images/01-main.png)
+![주문 완료 화면](./docs/assets/readme/07-order-complete.png)
 
-- 배너와 전체 상품 목록을 표시합니다.
-- 검색어와 카테고리를 URL query string으로 관리합니다.
-- 화면 하단 감지 시 다음 상품 페이지를 불러오는 무한 스크롤을 제공합니다.
-- 로딩 중에는 상품 카드 skeleton을 표시합니다.
+## Key Pull Requests
 
-### 2. 상품 상세 페이지
+| Stage | PR | Main Topic |
+| --- | --- | --- |
+| Week 1 | [#62](https://github.com/Kakao-tech-campus-FE/step2-FE-kakao-shop/pull/62) | 기본 component 구조와 화면 구성 |
+| Week 2 | [#71](https://github.com/Kakao-tech-campus-FE/step2-FE-kakao-shop/pull/71) | 인증, Redux, form state와 validation |
+| Week 3 | [#136](https://github.com/Kakao-tech-campus-FE/step2-FE-kakao-shop/pull/136) | 상품 목록, React Query, loading·error UI |
+| Week 4 | [#197](https://github.com/Kakao-tech-campus-FE/step2-FE-kakao-shop/pull/197) | 상품 상세, query key, option 처리 |
+| Week 5 | [#269](https://github.com/Kakao-tech-campus-FE/step2-FE-kakao-shop/pull/269) | cart, order, order complete |
 
-![상품 상세 페이지](./docs/images/02-product-detail.png)
+## Running Locally
 
-- URL의 상품 ID를 이용해 상세 API를 요청합니다.
-- 상품 옵션을 선택하고 옵션별 수량을 조절할 수 있습니다.
-- 선택한 옵션의 합계 금액을 실시간으로 계산합니다.
-- 장바구니 담기와 바로 구매 요청을 구분해 처리합니다.
+- Node.js `>=22.20.0 <23`
+- npm `>=10 <11`
 
-### 3. 로그인 페이지
-
-![로그인 페이지](./docs/images/03-login.png)
-
-- 제어 컴포넌트 방식으로 이메일과 비밀번호를 관리합니다.
-- 입력값 검증 후 로그인 API를 요청합니다.
-- 로그인 성공 시 토큰을 저장하고 메인 페이지에 완료 토스트를 표시합니다.
-- 데모 모드에서는 화면에 표시된 예시 계정으로 로그인할 수 있습니다.
-
-### 4. 회원가입 페이지
-
-![회원가입 페이지](./docs/images/04-signup.png)
-
-- 이메일, 이름, 비밀번호와 비밀번호 확인 값을 검증합니다.
-- Enter 제출과 버튼 제출을 동일한 form submit 흐름으로 처리합니다.
-- 중복 요청을 방지하고 API 오류 메시지를 입력 폼 안에 표시합니다.
-- 가입 성공 후 인증 상태를 저장하고 완료 토스트를 표시합니다.
-
-### 5. 장바구니 페이지
-
-![장바구니 페이지](./docs/images/05-cart.png)
-
-- 인증된 사용자의 장바구니 데이터를 조회합니다.
-- 상품 옵션별 수량 변경과 삭제를 지원합니다.
-- 상품 금액과 결제 예정 금액을 순수 계산 함수로 산출합니다.
-- 변경 완료 후 React Query 캐시와 화면을 동기화합니다.
-
-### 6. 주문·결제 페이지
-
-![주문 결제 페이지](./docs/images/06-order.png)
-
-- 주문 상품과 최종 결제 금액을 확인할 수 있습니다.
-- 필수 결제 동의를 완료한 경우에만 주문 API를 요청합니다.
-- 요청 중 결제 버튼을 비활성화해 중복 주문을 방지합니다.
-- 배송지와 결제 수단은 UI 확인을 위한 예시 정보입니다.
-
-### 7. 주문 완료 페이지
-
-![주문 완료 페이지](./docs/images/07-order-complete.png)
-
-- 주문 API가 반환한 ID로 주문 결과를 조회합니다.
-- 주문 번호, 주문 상품과 총 주문 금액을 표시합니다.
-- API 응답에 상품 이미지가 없어 텍스트 중심의 주문 내역으로 구성했습니다.
-
-## 프로젝트 구조
-
-```text
-src
-├── components      # 공통 UI와 화면 단위 컴포넌트
-├── hooks           # 입력 및 API 오류 처리 Hook
-├── mocks           # MSW handler와 데모 상태
-├── pages           # Route와 연결되는 페이지
-├── services        # Axios와 기능별 API 함수
-├── store           # Redux 인증 상태
-├── styles          # 공통 CSS
-└── utils           # 검증, 토큰, 금액 계산 로직
-```
-
-## 실행 방법
-
-### 권장 환경
-
-- Node.js `22.20.0`
-- npm `10.x`
-
-### 설치 및 실행
+### Install and Run
 
 ```bash
 npm ci
-```
-
-개발 서버를 실행합니다.
-
-```bash
 npm start
 ```
 
-브라우저에서 `http://localhost:3000`으로 접속합니다.
+브라우저에서 `http://localhost:3000`으로 접속합니다. 별도의 Backend나 환경변수 설정 없이 MSW가 기본 실행되며 `/api` request를 browser network layer에서 intercept합니다.
 
-별도의 환경변수 설정 없이 MSW 데모 API가 기본으로 실행됩니다.
-
-### 데모 로그인
-
-```text
-아이디: test@test.com
-비밀번호: test1234!
-```
-
-## 테스트와 빌드
+테스트와 production build는 다음 명령으로 확인할 수 있습니다.
 
 ```bash
 npm test -- --watchAll=false
 npm run build
 ```
 
-현재 기준 15개 테스트 스위트, 57개 테스트가 통과합니다.
+## Known Limitations
 
-주요 테스트 범위:
-
-- 로그인과 회원가입 입력 검증 및 제출
-- 인증 토큰 저장, 만료와 로그아웃
-- API endpoint, payload와 응답 변환
-- 상품 옵션 선택, 수량 변경과 바로 구매
-- 장바구니 합계 계산과 상태 변경
-- 주문 동의, 주문 생성과 완료 화면 이동
-- MSW 장바구니·주문 상태
-- 공통 로딩·오류 UI
-
-## 개선 사항
-
-- API 호출과 인증 token 처리를 공통 모듈로 통합
-- React Query key와 cache 갱신 방식 정리
-- 장바구니 계산과 폼 검증 로직을 순수 함수로 분리
-- 중복 요청 방지와 화면 내 오류 메시지 적용
-- 상품 목록부터 주문 완료까지 반응형 UI 개선
-- MSW 기반 로컬 데모 API 구성
-- 사용자 흐름 중심의 테스트 추가
-
-## 참고
-
-- 실제 결제나 주문은 발생하지 않습니다.
-- 기존 교육 API 대신 로컬 데모에서는 MSW를 사용합니다.
-- CRA 5 구조를 유지했으며, 장기적으로는 Vite 전환을 고려할 수 있습니다.
-- `npm audit` 결과에는 CRA 5 기반 과거 교육 프로젝트의 전이 dependency 보안 부채가 포함되어 있으며, 이 저장소는 운영 배포용 프로젝트가 아닙니다.
+- Product Detail의 `구매하기` 버튼은 교육 baseline을 보존한 alert-only 동작이며 실제 Buy Now flow가 아닙니다.
+- 주문 과정은 실제 결제가 발생하지 않는 교육용 flow입니다.
+- 현재 실행 환경은 종료된 교육 Backend를 대신하는 stateful MSW Mock이며, 새로고침하면 cart·order demo state가 초기화될 수 있습니다.
