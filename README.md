@@ -49,7 +49,7 @@ Kakao Tech Campus Frontend 교육 과정에서 진행한 프로젝트로, 제공
 | **개발 방식** | 주차별 요구사항 구현 · Pull Request · 코드 리뷰 |
 | **API 연동** | Axios · REST API |
 | **상태 관리** | Redux Toolkit · TanStack Query |
-| **배포 경험** | Docker · Nginx 기반 Frontend 서버 배포 |
+| **배포 경험** | Docker · Nginx · Krampoline 기반 Frontend 배포 |
 | **현재 환경** | Node.js 22 · MSW 기반 독립 실행 및 검증 |
 
 ---
@@ -197,18 +197,18 @@ useQuery({
 
 ## Deployment
 
-교육 과정 마지막에는 React Production Build를 **Docker Image로 구성하고 Nginx를 통해 실제 교육용 서버 환경에 배포**했습니다.
+React Production Build를 Nginx 기반 Docker Image로 구성하고, 교육에서 제공된 Krampoline 환경에 배포했습니다.
 
 ```mermaid
 flowchart LR
     A[React App]
     -->|Build| B[Static Files]
 
-    B --> C[Docker Image<br/>Nginx]
+    B --> C[Nginx Docker Image]
 
-    C -->|Deploy| D[교육용 서버 환경]
+    C -->|Deploy| D[Krampoline<br/>Kubernetes]
 
-    D --> E[Web Service]
+    D -->|Serve| E[Web Service]
 ```
 
 당시 사용한 `Dockerfile`, `default.conf`, `goorm.manifest`는 실제 배포 경험을 확인할 수 있도록 Repository에 보존했습니다.
@@ -270,7 +270,8 @@ MSW Handler
 | **Mock API** | MSW |
 | **Testing** | Jest · React Testing Library |
 | **Build** | Create React App |
-| **Deployment** | Docker · Nginx |
+| **Deployment** | Docker · Nginx · Krampoline |
+
 
 ---
 
