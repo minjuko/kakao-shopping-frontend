@@ -1,5 +1,7 @@
 # Kakao Shopping
 
+[![CI](https://github.com/minjuko/step2-FE-kakao-shop2/actions/workflows/ci.yml/badge.svg)](https://github.com/minjuko/step2-FE-kakao-shop2/actions/workflows/ci.yml)
+
 > **화면·인터페이스 요구사항과 REST API를 기반으로 구현한 React 쇼핑 서비스**
 
 Kakao Tech Campus Frontend 교육 과정에서 진행한 프로젝트로, 제공된 화면 설계와 Backend REST API를 기반으로 **상품 탐색 → 상세 조회 → 장바구니 → 주문 완료**까지의 주요 쇼핑 흐름을 구현했습니다.
@@ -44,12 +46,13 @@ Kakao Tech Campus Frontend 교육 과정에서 진행한 프로젝트로, 제공
 | 항목 | 내용 |
 | --- | --- |
 | **교육 과정** | Kakao Tech Campus Frontend |
-| **개발 영역** | Frontend |
+| **개발 기간** | 2023.07.03 – 2023.08.11 (6주) |
+| **담당 영역** | Frontend 기능 구현 및 REST API 연동 |
 | **주요 기능** | 회원가입·로그인, 상품 조회, 장바구니, 주문 |
 | **개발 방식** | 주차별 요구사항 구현 · Pull Request · 코드 리뷰 |
 | **API 연동** | Axios · REST API |
 | **상태 관리** | Redux Toolkit · TanStack Query |
-| **배포 경험** | Docker · Nginx · Krampoline 기반 Frontend 배포 |
+| **교육 당시 배포** | Docker · Nginx · Krampoline 기반 Frontend 배포 |
 | **현재 환경** | Node.js 22 · MSW 기반 독립 실행 및 검증 |
 
 ---
@@ -110,7 +113,7 @@ REST API
 - **localStorage** — 인증 Token persistence
 - **React State** — Component 내부 UI State
 
-상품 상세과 주문 결과처럼 Resource 식별자가 필요한 데이터는 다음과 같이 Query Key에 ID를 포함했습니다.
+상품 상세와 주문 결과처럼 Resource 식별자가 필요한 데이터는 다음과 같이 Query Key에 ID를 포함했습니다.
 
 ```text
 상품 목록   → ["products"]
@@ -215,7 +218,7 @@ flowchart LR
 
 ---
 
-## Portfolio Refactoring
+## 개선 작업
 
 교육 과정 종료 후 기존 Backend를 더 이상 사용할 수 없게 되어 **기존 API 계약을 유지한 MSW 기반 Mock API 환경**을 구성했습니다.
 
@@ -237,7 +240,7 @@ MSW Handler
 
 초기 교육 과정에서 제작한 `Breadcrumb`, `Carousel`, `Checklist`, `RadioButton`, `ToggleButton` 등의 Component는 학습 과정 보존을 위해 `components/exercises`로 분리했습니다.
 
-> MSW 환경 구성과 Repository 정리는 교육 당시 구현과 구분되는 **프로젝트 이후 개인 포트폴리오 정비 작업**입니다.
+> MSW 환경 구성과 Repository 정리는 교육 당시 구현과 구분되는 **프로젝트 이후 개선 작업**입니다.
 
 ---
 
@@ -247,10 +250,14 @@ MSW Handler
 
 | 검증 | 결과 |
 | --- | --- |
-| **Test Suites** | 18 passed |
-| **Tests** | 72 passed |
+| **GitHub Actions CI** | Passed |
+| **Test Suites** | 22 passed / 22 total |
+| **Tests** | 80 passed / 80 total |
+| **Failed / Skipped** | 0 / 0 |
+| **ESLint** | 0 errors / 2 warnings |
 | **Production Build** | Passed |
-| **ESLint** | Error 0 |
+| **Main JavaScript** | 144.05 kB gzip |
+| **CSS** | 6.38 kB gzip |
 | **`git diff --check`** | Passed |
 
 테스트는 인증, Form Validation, Protected Query, 장바구니 Optimistic Update와 Rollback, 주문 API 계약 등 주요 사용자 흐름과 회귀 가능성이 높은 영역을 중심으로 구성했습니다.
@@ -270,7 +277,7 @@ MSW Handler
 | **Mock API** | MSW |
 | **Testing** | Jest · React Testing Library |
 | **Build** | Create React App |
-| **Deployment** | Docker · Nginx · Krampoline |
+| **Deployment (2023)** | Docker · Nginx · Krampoline |
 
 
 ---
@@ -296,6 +303,7 @@ npm start
 ### Test & Build
 
 ```bash
+npm run lint
 npm test -- --watchAll=false
 npm run build
 ```
@@ -304,7 +312,7 @@ npm run build
 
 ## Limitations
 
-이 Repository는 **교육 당시 구현을 보존하면서 현재도 주요 Frontend 흐름을 검증할 수 있도록 정리한 포트폴리오 프로젝트**입니다.
+이 Repository는 **교육 당시 구현을 보존하면서 현재도 주요 Frontend 흐름을 실행하고 검증할 수 있도록 개선한 프로젝트**입니다.
 
 - 현재 API 환경은 종료된 교육 Backend를 대체하는 MSW Mock입니다.
 - 주문은 실제 결제가 발생하지 않는 교육용 Flow입니다.
