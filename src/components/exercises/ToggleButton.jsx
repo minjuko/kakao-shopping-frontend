@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import '../styles/ToggleButton.css';
+import '../../styles/exercises/ToggleButton.css';
 
 const ToggleButton = () => {
   const [isOn, setIsOn] = useState(false);

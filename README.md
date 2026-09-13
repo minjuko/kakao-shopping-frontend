@@ -282,6 +282,8 @@ MSW Handler
 - Node.js `>=22.20.0 <23`
 - npm `>=10 <11`
 
+> **실행환경 안내:** 루트의 `Dockerfile`, `default.conf`, `goorm.manifest`는 Kakao Tech Campus 교육 당시 goorm 컨테이너, Nginx Reverse Proxy와 Kubernetes Backend를 연결해 배포했던 환경을 보존한 자료입니다. 현재 로컬 실행환경은 해당 Docker 구성을 사용하지 않고 Node.js 22와 MSW Mock API를 기반으로 합니다.
+
 ### Run
 
 ```bash
@@ -289,7 +291,7 @@ npm ci
 npm start
 ```
 
-별도의 Backend 설정 없이 MSW가 `/api` 요청을 Network Layer에서 처리합니다.
+브라우저에서 `http://localhost:3000`으로 접속합니다. 별도의 Backend나 환경변수 설정 없이 MSW가 브라우저의 `/api` 요청을 가로채 처리합니다.
 
 ### Test & Build
 

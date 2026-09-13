@@ -1,6 +1,6 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, within } from "@testing-library/react";
 import { Provider } from "react-redux";
 import { MemoryRouter } from "react-router-dom";
 import userReducer from "../../store/slices/userSlice";
@@ -36,7 +36,7 @@ describe("GNB", () => {
   beforeEach(() => getCart.mockResolvedValue({ products: [] }));
 
   test("링크를 중첩하지 않고 주요 메뉴를 제공한다", () => {
-    const { container } = renderGNB();
+    renderGNB();
 
     expect(screen.getByRole("navigation", { name: "주요 메뉴" })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "카카오 쇼핑하기 홈" })).toHaveAttribute("href", "/");
@@ -45,7 +45,9 @@ describe("GNB", () => {
     expect(screen.getByRole("link", { name: "회원가입" })).toBeInTheDocument();
     expect(screen.getByRole("search")).toBeInTheDocument();
     expect(screen.getByRole("navigation", { name: "상품 카테고리" })).toBeInTheDocument();
-    expect(container.querySelector("a a")).toBeNull();
+    screen.getAllByRole("link").forEach((link) => {
+      expect(within(link).queryByRole("link")).not.toBeInTheDocument();
+    });
   });
 
   test("인증 상태에서 로그아웃하면 저장 토큰과 상태를 제거한다", () => {

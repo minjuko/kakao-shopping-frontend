@@ -1,5 +1,5 @@
 import React from 'react';
-import '../styles/Breadcrumb.css';
+import '../../styles/exercises/Breadcrumb.css';
 
 const Breadcrumb = ({ items }) => {
   return (

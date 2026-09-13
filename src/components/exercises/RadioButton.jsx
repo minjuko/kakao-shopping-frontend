@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import '../styles/RadioButton.css';
+import '../../styles/exercises/RadioButton.css';
 
 const RadioButton = () => {
   const options = ['Option 1', 'Option 2', 'Option 3', 'Option 4'];
