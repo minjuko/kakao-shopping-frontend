@@ -1,6 +1,6 @@
 # Kakao Shopping
 
-[![CI](https://github.com/minjuko/step2-FE-kakao-shop2/actions/workflows/ci.yml/badge.svg)](https://github.com/minjuko/step2-FE-kakao-shop2/actions/workflows/ci.yml)
+[![CI](https://github.com/minjuko/kakao-shopping-frontend/actions/workflows/ci.yml/badge.svg)](https://github.com/minjuko/kakao-shopping-frontend/actions/workflows/ci.yml)
 
 > **화면·인터페이스 요구사항과 REST API를 기반으로 구현한 React 쇼핑 서비스**
 
