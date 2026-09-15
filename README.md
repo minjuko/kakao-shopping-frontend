@@ -4,9 +4,9 @@
 
 > **화면·인터페이스 요구사항과 REST API를 기반으로 구현한 React 쇼핑 서비스**
 
-Kakao Tech Campus Frontend 교육 과정에서 진행한 프로젝트로, 제공된 화면 설계와 Backend REST API를 기반으로 **상품 탐색 → 상세 조회 → 장바구니 → 주문 완료**까지의 주요 쇼핑 흐름을 구현했습니다.
+Kakao Tech Campus Frontend 교육 과정에서 진행한 프로젝트입니다. 제공된 화면 설계와 Backend REST API를 바탕으로 **상품 탐색 → 상세 조회 → 장바구니 → 주문 완료**까지 주요 쇼핑 흐름을 구현했습니다.
 
-주차별 Pull Request와 코드 리뷰를 통해 Component 책임, Client/Server State 분리, 비동기 데이터 처리와 Query Cache 관리 방식을 개선했습니다.
+주차별 Pull Request와 코드 리뷰를 거치며 Component 책임, Client/Server State 분리, 비동기 데이터 처리와 Query Cache 관리 방식을 다듬었습니다.
 
 교육 과정 종료 후에는 기존 API 계약을 유지한 **MSW 기반 Mock API 환경**을 추가하여 Backend 없이도 주요 기능을 실행하고 검증할 수 있도록 정비했습니다.
 
