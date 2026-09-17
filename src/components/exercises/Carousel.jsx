@@ -46,7 +46,7 @@ const Carousel = () => {
 
   return (
     <div className="carousel">
-      <img src={images[currentImage]} alt={`Image ${currentImage + 1}`} className="carousel-image" />
+      <img src={images[currentImage]} alt={`Slide ${currentImage + 1} of ${images.length}`} className="carousel-image" />
       <div className="carousel-buttons">
         <button ref={prevButtonRef} className="carousel-button" onClick={handlePrevClick}>
           Prev

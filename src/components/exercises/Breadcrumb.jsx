@@ -7,11 +7,7 @@ const Breadcrumb = ({ items }) => {
       <ol className="breadcrumb">
         {items.map((item, index) => (
           <li key={index} className="breadcrumb-item">
-            {index === items.length - 1 ? (
-              <span>{item}</span>
-            ) : (
-              <a href="#">{item}</a>
-            )}
+            <span>{item}</span>
           </li>
         ))}
       </ol>

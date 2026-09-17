@@ -250,17 +250,21 @@ MSW Handler
 
 | 검증 | 결과 |
 | --- | --- |
-| **GitHub Actions CI** | Passed |
-| **Test Suites** | 22 passed / 22 total |
-| **Tests** | 80 passed / 80 total |
+| **GitHub Actions CI** | Not run for these local changes |
+| **Test Suites** | 23 passed / 23 total |
+| **Tests** | 81 passed / 81 total |
 | **Failed / Skipped** | 0 / 0 |
-| **ESLint** | 0 errors / 2 warnings |
+| **ESLint** | 0 errors / 0 warnings |
 | **Production Build** | Passed |
-| **Main JavaScript** | 144.05 kB gzip |
-| **CSS** | 6.38 kB gzip |
+| **Main JavaScript** | 135.04 kB gzip |
+| **CSS** | 6.22 kB gzip |
+| **`npm audit --omit=dev`** | 27 (9 low / 7 moderate / 11 high / 0 critical) |
+| **`npm audit`** | 27 (9 low / 7 moderate / 11 high / 0 critical) |
 | **`git diff --check`** | Passed |
 
 테스트는 인증, Form Validation, Protected Query, 장바구니 Optimistic Update와 Rollback, 주문 API 계약 등 주요 사용자 흐름과 회귀 가능성이 높은 영역을 중심으로 구성했습니다.
+
+의존성 취약점의 수정 범위와 보류 사유는 [의존성 audit 메모](./docs/dependency-audit.md)에 기록했습니다.
 
 ---
 
