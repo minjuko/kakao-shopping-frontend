@@ -4,11 +4,11 @@
 
 > **화면·인터페이스 요구사항과 REST API를 기반으로 구현한 React 쇼핑 서비스**
 
-Kakao Tech Campus Frontend 교육 과정에서 진행한 프로젝트입니다. 제공된 화면 설계와 Backend REST API를 바탕으로 **상품 탐색 → 상세 조회 → 장바구니 → 주문 완료**까지 주요 쇼핑 흐름을 구현했습니다.
+카카오 테크 캠퍼스 프론트엔드 교육 과정에서 진행한 프로젝트입니다. 제공된 화면 설계와 백엔드 REST API를 바탕으로 **상품 탐색 → 상세 조회 → 장바구니 → 주문 완료**까지 주요 쇼핑 흐름을 구현했습니다.
 
-주차별 Pull Request와 코드 리뷰를 거치며 Component 책임, Client/Server State 분리, 비동기 데이터 처리와 Query Cache 관리 방식을 다듬었습니다.
+주차별 Pull Request와 코드 리뷰를 거치며 컴포넌트 책임, Client/Server State 분리, 비동기 데이터 처리와 Query Cache 관리 방식을 다듬었습니다.
 
-교육 과정 종료 후에는 기존 API 계약을 유지한 **MSW 기반 Mock API 환경**을 추가하여 Backend 없이도 주요 기능을 실행하고 검증할 수 있도록 정비했습니다.
+교육 과정 종료 후에는 기존 API 계약을 유지한 **MSW 기반 Mock API 환경**을 추가하여 백엔드 없이도 주요 기능을 실행하고 검증할 수 있도록 정비했습니다.
 
 **React · JavaScript · Redux Toolkit · TanStack Query · Axios · Tailwind CSS · MSW**
 
@@ -45,14 +45,14 @@ Kakao Tech Campus Frontend 교육 과정에서 진행한 프로젝트입니다. 
 
 | 항목 | 내용 |
 | --- | --- |
-| **교육 과정** | Kakao Tech Campus Frontend |
+| **교육 과정** | 카카오 테크 캠퍼스 프론트엔드 |
 | **개발 기간** | 2023.07.03 – 2023.08.11 (6주) |
-| **담당 영역** | Frontend 기능 구현 및 REST API 연동 |
+| **담당 영역** | 프론트엔드 기능 구현 및 REST API 연동 |
 | **주요 기능** | 회원가입·로그인, 상품 조회, 장바구니, 주문 |
 | **개발 방식** | 주차별 요구사항 구현 · Pull Request · 코드 리뷰 |
 | **API 연동** | Axios · REST API |
 | **상태 관리** | Redux Toolkit · TanStack Query |
-| **교육 당시 배포** | Docker · Nginx · Krampoline 기반 Frontend 배포 |
+| **교육 당시 배포** | Docker · Nginx · Krampoline 기반 프론트엔드 배포 |
 | **현재 환경** | Node.js 22 · MSW 기반 독립 실행 및 검증 |
 
 ---
@@ -75,11 +75,11 @@ flowchart LR
 
 ## Core Implementation
 
-### 1. REST API 기반 Frontend 구현
+### 1. REST API 기반 프론트엔드 구현
 
-화면과 인터페이스 요구사항, Backend API 명세를 기반으로 사용자 동작을 실제 API 요청과 연결했습니다.
+화면과 인터페이스 요구사항, 백엔드 API 명세를 기반으로 사용자 동작을 실제 API 요청과 연결했습니다.
 
-HTTP 요청은 Component 내부에 직접 작성하지 않고 Service 영역으로 분리하고, 공통 Axios Instance를 통해 인증·상품·장바구니·주문 API를 호출하도록 구성했습니다.
+HTTP 요청은 컴포넌트 내부에 직접 작성하지 않고 Service 영역으로 분리하고, 공통 Axios Instance를 통해 인증·상품·장바구니·주문 API를 호출하도록 구성했습니다.
 
 ```text
 Page / Component
@@ -111,7 +111,9 @@ REST API
 - **Redux Toolkit** — 로그인 사용자와 인증 Client State
 - **TanStack Query** — 상품·장바구니·주문 Server State
 - **localStorage** — 인증 Token persistence
-- **React State** — Component 내부 UI State
+- **React State** — 컴포넌트 내부 UI State
+
+로그인 여부처럼 브라우저에서 관리하는 Client State는 Redux Toolkit에 두고, 서버 응답·캐시·재요청이 필요한 데이터는 TanStack Query로 분리했습니다. 모든 상태를 Redux에 저장하면 서버 데이터의 갱신과 캐시 무효화를 직접 관리해야 하므로, 상품·장바구니·주문 데이터는 Query Cache를 단일 기준으로 사용했습니다.
 
 상품 상세와 주문 결과처럼 Resource 식별자가 필요한 데이터는 다음과 같이 Query Key에 ID를 포함했습니다.
 
@@ -122,7 +124,7 @@ REST API
 주문 결과   → ["order", orderId]
 ```
 
-이를 통해 Redux와 React Query를 동일한 목적으로 중복 사용하지 않고 **데이터의 소유 주체에 따라 상태 관리 책임을 분리**했습니다.
+이를 통해 Redux와 TanStack Query를 동일한 목적으로 중복 사용하지 않고 **데이터의 소유 주체에 따라 상태 관리 책임을 분리**했습니다.
 
 ---
 
@@ -177,7 +179,7 @@ Protected
 
 로그인 상태가 Local State와 `localStorage` 등에 분산된 구조를 점검하고, 이후 **Redux Toolkit은 인증 Client State, localStorage는 Token persistence**를 담당하도록 책임을 구분했습니다.
 
-### React Query Cache Identity
+### TanStack Query Cache Identity
 
 [PR #197](https://github.com/Kakao-tech-campus-FE/step2-FE-kakao-shop/pull/197)
 
@@ -220,7 +222,7 @@ flowchart LR
 
 ## 개선 작업
 
-교육 과정 종료 후 기존 Backend를 더 이상 사용할 수 없게 되어 **기존 API 계약을 유지한 MSW 기반 Mock API 환경**을 구성했습니다.
+교육 과정 종료 후 기존 백엔드를 더 이상 사용할 수 없게 되어 **기존 API 계약을 유지한 MSW 기반 Mock API 환경**을 구성했습니다.
 
 ```text
 React Component
@@ -236,9 +238,9 @@ REST API Request
 MSW Handler
 ```
 
-정적 데이터를 Component에 직접 삽입하지 않고 기존 네트워크 요청 구조를 유지하여, Backend가 없는 현재 환경에서도 인증·상품·장바구니·주문의 주요 흐름을 확인할 수 있도록 구성했습니다.
+정적 데이터를 컴포넌트에 직접 삽입하지 않고 기존 네트워크 요청 구조를 유지하여, 백엔드가 없는 현재 환경에서도 인증·상품·장바구니·주문의 주요 흐름을 확인할 수 있도록 구성했습니다.
 
-초기 교육 과정에서 제작한 `Breadcrumb`, `Carousel`, `Checklist`, `RadioButton`, `ToggleButton` 등의 Component는 학습 과정 보존을 위해 `components/exercises`로 분리했습니다.
+초기 교육 과정에서 제작한 `Breadcrumb`, `Carousel`, `Checklist`, `RadioButton`, `ToggleButton` 등의 컴포넌트는 학습 과정 보존을 위해 `components/exercises`로 분리했습니다.
 
 > MSW 환경 구성과 Repository 정리는 교육 당시 구현과 구분되는 **프로젝트 이후 개선 작업**입니다.
 
@@ -268,7 +270,7 @@ MSW Handler
 
 | 영역 | 기술 |
 | --- | --- |
-| **Frontend** | React 18 · JavaScript |
+| **프론트엔드** | React 18 · JavaScript |
 | **Routing** | React Router 6 |
 | **Client State** | Redux Toolkit |
 | **Server State** | TanStack Query |
@@ -279,7 +281,6 @@ MSW Handler
 | **Build** | Create React App |
 | **Deployment (2023)** | Docker · Nginx · Krampoline |
 
-
 ---
 
 ## Running Locally
@@ -289,7 +290,7 @@ MSW Handler
 - Node.js `>=22.20.0 <23`
 - npm `>=10 <11`
 
-> **실행환경 안내:** 루트의 `Dockerfile`, `default.conf`, `goorm.manifest`는 Kakao Tech Campus 교육 당시 goorm 컨테이너, Nginx Reverse Proxy와 Kubernetes Backend를 연결해 배포했던 환경을 보존한 자료입니다. 현재 로컬 실행환경은 해당 Docker 구성을 사용하지 않고 Node.js 22와 MSW Mock API를 기반으로 합니다.
+> **실행환경 안내:** 루트의 `Dockerfile`, `default.conf`, `goorm.manifest`는 카카오 테크 캠퍼스 교육 당시 goorm 컨테이너, Nginx Reverse Proxy와 Kubernetes 백엔드를 연결해 배포했던 환경을 보존한 자료입니다. 현재 로컬 실행환경은 해당 Docker 구성을 사용하지 않고 Node.js 22와 MSW Mock API를 기반으로 합니다.
 
 ### Run
 
@@ -298,7 +299,7 @@ npm ci
 npm start
 ```
 
-브라우저에서 `http://localhost:3000`으로 접속합니다. 별도의 Backend나 환경변수 설정 없이 MSW가 브라우저의 `/api` 요청을 가로채 처리합니다.
+브라우저에서 `http://localhost:3000`으로 접속합니다. 별도의 백엔드나 환경변수 설정 없이 MSW가 브라우저의 `/api` 요청을 가로채 처리합니다.
 
 ### Test & Build
 
@@ -312,9 +313,9 @@ npm run build
 
 ## Limitations
 
-이 Repository는 **교육 당시 구현을 보존하면서 현재도 주요 Frontend 흐름을 실행하고 검증할 수 있도록 개선한 프로젝트**입니다.
+이 Repository는 **교육 당시 구현을 보존하면서 현재도 주요 프론트엔드 흐름을 실행하고 검증할 수 있도록 개선한 프로젝트**입니다.
 
-- 현재 API 환경은 종료된 교육 Backend를 대체하는 MSW Mock입니다.
+- 현재 API 환경은 종료된 교육 백엔드를 대체하는 MSW Mock입니다.
 - 주문은 실제 결제가 발생하지 않는 교육용 Flow입니다.
 - 상품 상세의 `구매하기`는 교육 당시 구현을 보존하며 실제 Buy Now Flow와 연결되지 않습니다.
 - Mock 기반 Cart·Order 상태는 새로고침 시 초기화될 수 있습니다.
