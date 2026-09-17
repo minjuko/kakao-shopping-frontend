@@ -252,7 +252,7 @@ MSW Handler
 
 | 검증 | 결과 |
 | --- | --- |
-| **GitHub Actions CI** | Not run for these local changes |
+| **GitHub Actions CI** | Passed |
 | **Test Suites** | 23 passed / 23 total |
 | **Tests** | 81 passed / 81 total |
 | **Failed / Skipped** | 0 / 0 |
