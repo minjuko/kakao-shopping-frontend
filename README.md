@@ -41,7 +41,7 @@
 
 ---
 
-## Project Overview
+## 프로젝트 정보
 
 | 항목 | 내용 |
 | --- | --- |
@@ -57,7 +57,7 @@
 
 ---
 
-## Core User Flow
+## 주요 사용자 흐름
 
 ```mermaid
 flowchart LR
@@ -73,7 +73,7 @@ flowchart LR
 
 ---
 
-## Core Implementation
+## 핵심 구현
 
 ### 1. REST API 기반 프론트엔드 구현
 
@@ -167,7 +167,7 @@ Protected
 
 ---
 
-## Code Review
+## 코드 리뷰
 
 교육 과정에서는 주차별 구현 결과를 Pull Request로 제출하고 코드 리뷰를 반영했습니다.
 
@@ -200,7 +200,7 @@ useQuery({
 
 ---
 
-## Deployment
+## 교육 당시 배포
 
 React Production Build를 Nginx 기반 Docker Image로 구성하고, 교육에서 제공된 Krampoline 환경에 배포했습니다.
 
@@ -246,7 +246,7 @@ MSW Handler
 
 ---
 
-## Verification
+## 검증 결과
 
 현재 Repository를 기준으로 테스트, Production Build와 정적 검증을 수행했습니다.
 
@@ -270,7 +270,7 @@ MSW Handler
 
 ---
 
-## Tech Stack
+## 기술 스택
 
 | 영역 | 기술 |
 | --- | --- |
@@ -287,16 +287,16 @@ MSW Handler
 
 ---
 
-## Running Locally
+## 로컬 실행
 
-### Requirements
+### 실행 환경
 
 - Node.js `>=22.20.0 <23`
 - npm `>=10 <11`
 
 > **실행환경 안내:** 루트의 `Dockerfile`, `default.conf`, `goorm.manifest`는 카카오 테크 캠퍼스 교육 당시 goorm 컨테이너, Nginx Reverse Proxy와 Kubernetes 백엔드를 연결해 배포했던 환경을 보존한 자료입니다. 현재 로컬 실행환경은 해당 Docker 구성을 사용하지 않고 Node.js 22와 MSW Mock API를 기반으로 합니다.
 
-### Run
+### 실행
 
 ```bash
 npm ci
@@ -305,7 +305,7 @@ npm start
 
 브라우저에서 `http://localhost:3000`으로 접속합니다. 별도의 백엔드나 환경변수 설정 없이 MSW가 브라우저의 `/api` 요청을 가로채 처리합니다.
 
-### Test & Build
+### 테스트 및 빌드
 
 ```bash
 npm run lint
@@ -315,7 +315,7 @@ npm run build
 
 ---
 
-## Limitations
+## 한계 및 현재 범위
 
 이 Repository는 **교육 당시 구현을 보존하면서 현재도 주요 프론트엔드 흐름을 실행하고 검증할 수 있도록 개선한 프로젝트**입니다.
 
