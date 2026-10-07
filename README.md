@@ -173,13 +173,13 @@ Protected
 
 리뷰에서 지적된 문제를 해당 코드만 수정하는 데 그치지 않고 **이후 기능에 적용할 구현 기준으로 확장하는 데 중점**을 두었습니다.
 
-### Authentication State Responsibility
+### 인증 상태 책임
 
 [PR #71](https://github.com/Kakao-tech-campus-FE/step2-FE-kakao-shop/pull/71)
 
 로그인 상태가 Local State와 `localStorage` 등에 분산된 구조를 점검하고, 이후 **Redux Toolkit은 인증 Client State, localStorage는 Token persistence**를 담당하도록 책임을 구분했습니다.
 
-### TanStack Query Cache Identity
+### TanStack Query 캐시 식별
 
 [PR #197](https://github.com/Kakao-tech-campus-FE/step2-FE-kakao-shop/pull/197)
 
