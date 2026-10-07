@@ -104,7 +104,7 @@ REST API
 
 ---
 
-### 2. Client State와 Server State 분리
+### 2. 클라이언트 상태와 서버 상태 분리
 
 상태의 성격에 따라 관리 책임을 구분했습니다.
 
@@ -146,7 +146,7 @@ REST API
 
 ---
 
-### 4. 인증과 Protected Route
+### 4. 인증과 보호 경로
 
 인증 상태는 Redux Toolkit으로 관리하고 Token은 `localStorage`를 통해 유지했습니다.
 
