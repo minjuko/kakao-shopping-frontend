@@ -52,7 +52,7 @@
 | **개발 방식** | 주차별 요구사항 구현 · Pull Request · 코드 리뷰 |
 | **API 연동** | Axios · REST API |
 | **상태 관리** | Redux Toolkit · TanStack Query |
-| **교육 당시 배포** | Docker · Nginx · Krampoline 기반 프론트엔드 배포 |
+| **교육 당시 배포** | Docker · Nginx 기반 프론트엔드 구성, Krampoline 배포 경험 |
 | **현재 환경** | Node.js 22 · MSW 기반 독립 실행 및 검증 |
 
 ---
@@ -202,21 +202,21 @@ useQuery({
 
 ## 교육 당시 배포
 
-React Production Build를 Nginx 기반 Docker Image로 구성하고, 교육에서 제공된 Krampoline 환경에 배포했습니다.
+교육 당시 React Production Build를 컨테이너에서 생성하고 `serve`로 제공했으며, Nginx가 프론트엔드와 Kubernetes 내부 백엔드 요청을 Reverse Proxy하도록 구성했습니다. Krampoline 배포 경험은 당시 기록에 근거한 이력이며, 공개 Repository에는 Kubernetes·Krampoline 배포 Manifest가 없어 현재 상태만으로 배포를 재현할 수는 없습니다.
 
 ```mermaid
 flowchart LR
     A[React App]
     -->|Build| B[Static Files]
 
-    B --> C[Nginx Docker Image]
+    B --> C[serve :3000]
 
-    C -->|Deploy| D[Krampoline<br/>Kubernetes]
+    C --> D[Nginx Reverse Proxy]
 
-    D -->|Serve| E[Web Service]
+    D -->|/api| E[Kubernetes 내부 Backend Service]
 ```
 
-당시 사용한 `Dockerfile`, `default.conf`, `goorm.manifest`는 실제 배포 경험을 확인할 수 있도록 Repository에 보존했습니다.
+`Dockerfile`과 `default.conf`는 당시 컨테이너 실행 및 Proxy 구성을 보존합니다. `goorm.manifest`는 goorm IDE 프로젝트 설정이며 Krampoline 배포 Manifest가 아닙니다.
 
 ---
 
@@ -258,10 +258,10 @@ MSW Handler
 | **Failed / Skipped** | 0 / 0 |
 | **ESLint** | 0 errors / 0 warnings |
 | **Production Build** | Passed |
-| **Main JavaScript** | 135.04 kB gzip |
-| **CSS** | 6.22 kB gzip |
-| **`npm audit --omit=dev`** | 27 (9 low / 7 moderate / 11 high / 0 critical) |
-| **`npm audit`** | 27 (9 low / 7 moderate / 11 high / 0 critical) |
+| **Main JavaScript** | 136.88 kB gzip |
+| **CSS** | 6.48 kB gzip |
+| **`npm audit --omit=dev`** | 0 |
+| **`npm audit`** | 100 (3 low / 35 moderate / 62 high / 0 critical) |
 | **`git diff --check`** | Passed |
 
 테스트는 인증, Form Validation, Protected Query, 장바구니 Optimistic Update와 Rollback, 주문 API 계약 등 주요 사용자 흐름과 회귀 가능성이 높은 영역을 중심으로 구성했습니다.
@@ -294,7 +294,7 @@ MSW Handler
 - Node.js `>=22.20.0 <23`
 - npm `>=10 <11`
 
-> **실행환경 안내:** 루트의 `Dockerfile`, `default.conf`, `goorm.manifest`는 카카오 테크 캠퍼스 교육 당시 goorm 컨테이너, Nginx Reverse Proxy와 Kubernetes 백엔드를 연결해 배포했던 환경을 보존한 자료입니다. 현재 로컬 실행환경은 해당 Docker 구성을 사용하지 않고 Node.js 22와 MSW Mock API를 기반으로 합니다.
+> **실행환경 안내:** 루트의 `Dockerfile`과 `default.conf`는 교육 당시 컨테이너, Nginx Reverse Proxy와 Kubernetes 내부 백엔드 연결 구성을 보존한 자료입니다. `goorm.manifest`는 IDE 설정이며 배포 Manifest가 아닙니다. 현재 로컬 실행환경은 해당 Docker 구성을 사용하지 않고 Node.js 22와 MSW Mock API를 기반으로 합니다.
 
 ### 실행
 
