@@ -12,6 +12,22 @@
 
 **React · JavaScript · Redux Toolkit · TanStack Query · Axios · Tailwind CSS · MSW**
 
+## 프로젝트 개요
+
+| 항목 | 내용 |
+| --- | --- |
+| **교육 과정** | 카카오 테크 캠퍼스 프론트엔드 |
+| **개발 기간** | 2023.07.03 – 2023.08.11 (6주) |
+| **담당 영역** | 프론트엔드 기능 구현 및 REST API 연동 |
+| **주요 기능** | 회원가입·로그인, 상품 조회, 장바구니, 주문 |
+| **개발 방식** | 주차별 요구사항 구현 · Pull Request · 코드 리뷰 |
+| **API 연동** | Axios · REST API |
+| **상태 관리** | Redux Toolkit · TanStack Query |
+| **교육 당시 배포** | Docker · Nginx 기반 프론트엔드 구성, Krampoline 배포 경험 |
+| **현재 환경** | Node.js 22 · MSW 기반 독립 실행 및 검증 |
+
+## 주요 기능 및 화면
+
 <table>
   <tr>
     <td align="center">
@@ -39,25 +55,8 @@
   </tr>
 </table>
 
----
-
-## 프로젝트 정보
-
-| 항목 | 내용 |
-| --- | --- |
-| **교육 과정** | 카카오 테크 캠퍼스 프론트엔드 |
-| **개발 기간** | 2023.07.03 – 2023.08.11 (6주) |
-| **담당 영역** | 프론트엔드 기능 구현 및 REST API 연동 |
-| **주요 기능** | 회원가입·로그인, 상품 조회, 장바구니, 주문 |
-| **개발 방식** | 주차별 요구사항 구현 · Pull Request · 코드 리뷰 |
-| **API 연동** | Axios · REST API |
-| **상태 관리** | Redux Toolkit · TanStack Query |
-| **교육 당시 배포** | Docker · Nginx 기반 프론트엔드 구성, Krampoline 배포 경험 |
-| **현재 환경** | Node.js 22 · MSW 기반 독립 실행 및 검증 |
-
----
-
-## 주요 사용자 흐름
+- 상품 탐색·상세·장바구니·주문까지의 쇼핑 흐름
+- 인증·보호 경로 및 API 요청 상태 처리
 
 ```mermaid
 flowchart LR
@@ -71,9 +70,22 @@ flowchart LR
 
 상품 목록과 상세 페이지는 비로그인 상태에서도 접근할 수 있으며, 장바구니와 주문은 인증이 필요한 Route로 구분했습니다.
 
----
+## 기술 스택
 
-## 핵심 구현
+| 영역 | 기술 |
+| --- | --- |
+| **프론트엔드** | React 18 · JavaScript |
+| **Routing** | React Router 6 |
+| **Client State** | Redux Toolkit |
+| **Server State** | TanStack Query |
+| **HTTP** | Axios |
+| **Styling** | Tailwind CSS · styled-components · CSS |
+| **Mock API** | MSW |
+| **Testing** | Jest · React Testing Library |
+| **Build** | Create React App |
+| **Deployment (2023)** | Docker · Nginx · Krampoline |
+
+## 담당 역할 및 핵심 구현
 
 ### 1. REST API 기반 프론트엔드 구현
 
@@ -102,8 +114,6 @@ REST API
 | **장바구니** | 상품 추가·조회·수량 변경 |
 | **주문** | 주문 생성 및 ID 기반 결과 조회 |
 
----
-
 ### 2. 클라이언트 상태와 서버 상태 분리
 
 상태의 성격에 따라 관리 책임을 구분했습니다.
@@ -126,8 +136,6 @@ REST API
 
 이를 통해 Redux와 TanStack Query를 동일한 목적으로 중복 사용하지 않고 **데이터의 소유 주체에 따라 상태 관리 책임을 분리**했습니다.
 
----
-
 ### 3. 비동기 데이터 처리
 
 상품 목록은 `useInfiniteQuery`와 Intersection Observer를 이용해 페이지 단위로 추가 조회했습니다.
@@ -143,8 +151,6 @@ REST API
 장바구니 수량 변경에는 **Optimistic Update**를 적용하여 서버 응답 전에 Query Cache와 UI를 먼저 갱신했습니다.
 
 요청 실패 시 이전 Cache로 Rollback한 뒤 Query를 재검증하며, 동일 Cart ID에 Mutation이 진행 중인 경우 추가 요청을 제한하여 중복 Mutation을 제어했습니다.
-
----
 
 ### 4. 인증과 보호 경로
 
@@ -165,129 +171,19 @@ Protected
 └─ 주문 완료
 ```
 
----
+- [코드 리뷰와 상태 관리 근거](https://github.com/Kakao-tech-campus-FE/step2-FE-kakao-shop/pull/197)
 
-## 코드 리뷰
 
-교육 과정에서는 주차별 구현 결과를 Pull Request로 제출하고 코드 리뷰를 반영했습니다.
+## 트러블슈팅
 
-리뷰에서 지적된 문제를 해당 코드만 수정하는 데 그치지 않고 **이후 기능에 적용할 구현 기준으로 확장하는 데 중점**을 두었습니다.
+### 상품 상세 데이터의 캐시 식별자 충돌
 
-### 인증 상태 책임
+- **문제:** 서로 다른 상품 상세 조회에서 동일한 Query Key를 사용하면 이전 상품의 캐시가 재사용될 수 있었습니다.
+- **원인:** 상품 ID가 Query Key에 포함되지 않았습니다.
+- **해결:** `['product', id]` 형태로 상품별 캐시를 분리하고 주문 결과 조회에도 리소스 ID 기반 키를 적용했습니다.
+- **근거:** [교육 과정 코드 리뷰 PR #197](https://github.com/Kakao-tech-campus-FE/step2-FE-kakao-shop/pull/197)
 
-[PR #71](https://github.com/Kakao-tech-campus-FE/step2-FE-kakao-shop/pull/71)
-
-로그인 상태가 Local State와 `localStorage` 등에 분산된 구조를 점검하고, 이후 **Redux Toolkit은 인증 Client State, localStorage는 Token persistence**를 담당하도록 책임을 구분했습니다.
-
-### TanStack Query 캐시 식별
-
-[PR #197](https://github.com/Kakao-tech-campus-FE/step2-FE-kakao-shop/pull/197)
-
-상품 상세 조회에서 고정된 Query Key를 사용하던 구현에 대해 상품 ID를 포함해야 한다는 리뷰를 받았습니다.
-
-```jsx
-// Before
-useQuery("product", () => getProductById(id));
-
-// After
-useQuery({
-  queryKey: ["product", id],
-  queryFn: () => getProductById(id),
-});
-```
-
-이를 통해 Query Key가 단순 요청 이름이 아니라 **Server State의 Cache Identity**라는 점을 이해하고, 이후 주문 결과에도 `["order", orderId]` 형태로 동일한 기준을 적용했습니다.
-
----
-
-## 교육 당시 배포
-
-교육 당시 React Production Build를 컨테이너에서 생성하고 `serve`로 제공했으며, Nginx가 프론트엔드와 Kubernetes 내부 백엔드 요청을 Reverse Proxy하도록 구성했습니다. Krampoline 배포 경험은 당시 기록에 근거한 이력이며, 공개 Repository에는 Kubernetes·Krampoline 배포 Manifest가 없어 현재 상태만으로 배포를 재현할 수는 없습니다.
-
-```mermaid
-flowchart LR
-    A[React App]
-    -->|Build| B[Static Files]
-
-    B --> C[serve :3000]
-
-    C --> D[Nginx Reverse Proxy]
-
-    D -->|/api| E[Kubernetes 내부 Backend Service]
-```
-
-`Dockerfile`과 `default.conf`는 당시 컨테이너 실행 및 Proxy 구성을 보존합니다. `goorm.manifest`는 goorm IDE 프로젝트 설정이며 Krampoline 배포 Manifest가 아닙니다.
-
----
-
-## 개선 작업
-
-교육 과정 종료 후 기존 백엔드를 더 이상 사용할 수 없게 되어 **기존 API 계약을 유지한 MSW 기반 Mock API 환경**을 구성했습니다.
-
-```text
-React Component
-      ↓
-TanStack Query
-      ↓
-Service
-      ↓
-Axios
-      ↓
-REST API Request
-      ↓
-MSW Handler
-```
-
-정적 데이터를 컴포넌트에 직접 삽입하지 않고 기존 네트워크 요청 구조를 유지하여, 백엔드가 없는 현재 환경에서도 인증·상품·장바구니·주문의 주요 흐름을 확인할 수 있도록 구성했습니다.
-
-초기 교육 과정에서 제작한 `Breadcrumb`, `Carousel`, `Checklist`, `RadioButton`, `ToggleButton` 등의 컴포넌트는 학습 과정 보존을 위해 `components/exercises`로 분리했습니다.
-
-> MSW 환경 구성과 Repository 정리는 교육 당시 구현과 구분되는 **프로젝트 이후 개선 작업**입니다.
-
----
-
-## 검증 결과
-
-현재 Repository를 기준으로 테스트, Production Build와 정적 검증을 수행했습니다.
-
-| 검증 | 결과 |
-| --- | --- |
-| **GitHub Actions CI** | Passed |
-| **Test Suites** | 23 passed / 23 total |
-| **Tests** | 81 passed / 81 total |
-| **Failed / Skipped** | 0 / 0 |
-| **ESLint** | 0 errors / 0 warnings |
-| **Production Build** | Passed |
-| **Main JavaScript** | 136.88 kB gzip |
-| **CSS** | 6.48 kB gzip |
-| **`npm audit --omit=dev`** | 0 |
-| **`npm audit`** | 100 (3 low / 35 moderate / 62 high / 0 critical) |
-| **`git diff --check`** | Passed |
-
-테스트는 인증, Form Validation, Protected Query, 장바구니 Optimistic Update와 Rollback, 주문 API 계약 등 주요 사용자 흐름과 회귀 가능성이 높은 영역을 중심으로 구성했습니다.
-
-의존성 취약점의 수정 범위와 보류 사유는 [의존성 audit 메모](./docs/dependency-audit.md)에 기록했습니다.
-
----
-
-## 기술 스택
-
-| 영역 | 기술 |
-| --- | --- |
-| **프론트엔드** | React 18 · JavaScript |
-| **Routing** | React Router 6 |
-| **Client State** | Redux Toolkit |
-| **Server State** | TanStack Query |
-| **HTTP** | Axios |
-| **Styling** | Tailwind CSS · styled-components · CSS |
-| **Mock API** | MSW |
-| **Testing** | Jest · React Testing Library |
-| **Build** | Create React App |
-| **Deployment (2023)** | Docker · Nginx · Krampoline |
-
----
-
-## 로컬 실행
+## 시작하기 (Getting Started)
 
 ### 실행 환경
 
@@ -313,16 +209,26 @@ npm test -- --watchAll=false
 npm run build
 ```
 
----
+## 테스트 및 코드 품질
 
-## 한계 및 현재 범위
+현재 Repository를 기준으로 테스트, Production Build와 정적 검증을 수행했습니다.
 
-이 Repository는 **교육 당시 구현을 보존하면서 현재도 주요 프론트엔드 흐름을 실행하고 검증할 수 있도록 개선한 프로젝트**입니다.
+| 검증 | 결과 |
+| --- | --- |
+| **GitHub Actions CI** | Passed |
+| **Test Suites** | 23 passed / 23 total |
+| **Tests** | 81 passed / 81 total |
+| **Failed / Skipped** | 0 / 0 |
+| **ESLint** | 0 errors / 0 warnings |
+| **Production Build** | Passed |
+| **Main JavaScript** | 136.88 kB gzip |
+| **CSS** | 6.48 kB gzip |
+| **`npm audit --omit=dev`** | 0 |
+| **`git diff --check`** | Passed |
 
-- 현재 API 환경은 종료된 교육 백엔드를 대체하는 MSW Mock입니다.
-- 주문은 실제 결제가 발생하지 않는 교육용 Flow입니다.
-- 상품 상세의 `구매하기`는 교육 당시 구현을 보존하며 실제 Buy Now Flow와 연결되지 않습니다.
-- Mock 기반 Cart·Order 상태는 새로고침 시 초기화될 수 있습니다.
-- 교육 당시 Docker·Nginx 배포 설정과 현재 Local/MSW 실행 환경은 별도로 관리합니다.
 
----
+
+## 산출물 및 관련 문서
+
+- [의존성 점검 기록](docs/dependency-audit.md)
+- [교육 과정 코드 리뷰 PR #71](https://github.com/Kakao-tech-campus-FE/step2-FE-kakao-shop/pull/71)
