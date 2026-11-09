@@ -183,6 +183,14 @@ Protected
 - **해결:** `['product', id]` 형태로 상품별 캐시를 분리하고 주문 결과 조회에도 리소스 ID 기반 키를 적용했습니다.
 - **근거:** [교육 과정 코드 리뷰 PR #197](https://github.com/Kakao-tech-campus-FE/step2-FE-kakao-shop/pull/197)
 
+### 장바구니 동시 수량 변경 시 캐시 정합성 보완 (개인 후속 개선)
+
+- **문제:** 서로 다른 장바구니 항목 A·B의 수량 변경 요청이 겹칠 때, A가 실패하면 이전 장바구니 전체를 복원해 B의 성공한 변경까지 덮어쓸 수 있었습니다.
+- **원인:** Optimistic Update 실패 시 전체 Cart Query Cache를 Rollback하고, 성공 응답에서도 전체 Cart를 덮어쓰는 처리 방식이었습니다.
+- **해결:** 실패한 요청의 Cart ID에 해당하는 수량만 이전 값으로 복원하고, 성공한 요청의 Cart ID에 해당하는 수량만 현재 Cache에 병합하도록 변경했습니다.
+- **검증:** A 실패/B 성공 상황에서 응답 순서를 바꾼 두 가지 테스트를 추가해, 실패 항목만 복원되고 성공 항목의 변경이 유지되는지 확인했습니다. MSW·모의 API 응답을 활용한 테스트로 실제 결제 서버의 동시성 보장을 의미하지 않습니다.
+- **변경 근거:** [fix: isolate concurrent cart updates](https://github.com/minjuko/kakao-shopping-frontend/commit/168eab997dde9d64c7b30595d88df12a0da32ca7)
+
 ## 시작하기 (Getting Started)
 
 ### 실행 환경
@@ -211,13 +219,13 @@ npm run build
 
 ## 테스트 및 코드 품질
 
-현재 Repository를 기준으로 테스트, Production Build와 정적 검증을 수행했습니다.
+최근 로컬 검증 기록과 이전 CI·빌드 검증 결과를 구분해 기록했습니다. 아래 테스트 83개는 장바구니 동시 요청 회귀 테스트를 추가한 뒤 작업보드에 기록한 로컬 실행 결과입니다.
 
 | 검증 | 결과 |
 | --- | --- |
 | **GitHub Actions CI** | Passed |
 | **Test Suites** | 23 passed / 23 total |
-| **Tests** | 81 passed / 81 total |
+| **Tests (최근 로컬 기록)** | 83 passed / 83 total |
 | **Failed / Skipped** | 0 / 0 |
 | **ESLint** | 0 errors / 0 warnings |
 | **Production Build** | Passed |
