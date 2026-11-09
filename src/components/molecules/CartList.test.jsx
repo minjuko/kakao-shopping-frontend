@@ -1,6 +1,6 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { act, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import { Provider } from "react-redux";
 import { MemoryRouter } from "react-router-dom";
 import { getCart, updateCart } from "../../services/cart";
@@ -71,6 +71,46 @@ const deferred = () => {
 };
 
 describe("CartList", () => {
+  test.each([false, true])("keeps concurrent cart changes when A fails (B first: %s)", async (bFirst) => {
+    const a = deferred();
+    const b = deferred();
+    const refetch = deferred();
+    getCart.mockResolvedValueOnce(cartData).mockImplementation(() => refetch.promise);
+    updateCart.mockImplementationOnce(() => a.promise).mockImplementationOnce(() => b.promise);
+    const store = configureStore({ reducer: { user: userReducer } });
+    const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false }, mutations: { retry: false } } });
+    render(<Provider store={store}><QueryClientProvider client={queryClient}><MemoryRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}><CartList /></MemoryRouter></QueryClientProvider></Provider>);
+    const rows = await screen.findAllByRole("group");
+    fireEvent.click(within(rows[0]).getAllByRole("button")[1]);
+    fireEvent.click(within(rows[1]).getAllByRole("button")[1]);
+    await waitFor(() => expect(updateCart).toHaveBeenCalledTimes(2));
+    expect(updateCart.mock.calls.map(([updates]) => updates[0])).toEqual([
+      { cartId: 10, quantity: 2 },
+      { cartId: 20, quantity: 2 },
+    ]);
+    const success = { ...cartData, products: [cartData.products[0], { ...cartData.products[1], carts: [{ ...cartData.products[1].carts[0], quantity: 2 }] }] };
+    const expectQuantities = (expected) => {
+      expect(queryClient.getQueryData(["cart"]).products.map((product) => product.carts[0].quantity)).toEqual(expected);
+      expect(screen.getAllByRole("status").map((node) => node.textContent)).toEqual(expected.map(String));
+    };
+    if (bFirst) {
+      await act(async () => b.resolve(success));
+      await waitFor(() => expectQuantities([2, 2]));
+      await act(async () => a.reject({ response: { status: 500 } }));
+    } else {
+      await act(async () => a.reject({ response: { status: 500 } }));
+      await waitFor(() => expectQuantities([1, 2]));
+      await act(async () => b.resolve(success));
+    }
+    await waitFor(() => expect(queryClient.getQueryData(["cart"]).products[1].carts[0].quantity).toBe(2));
+    await waitFor(() => expect(getCart.mock.calls.length).toBeGreaterThan(1));
+    expectQuantities([1, 2]);
+    expect(screen.getByRole("alert")).toBeInTheDocument();
+    await act(async () => refetch.resolve(success));
+    await waitFor(() => expect(queryClient.getQueryData(["cart"]).products[1].carts[0].quantity).toBe(2));
+    expectQuantities([1, 2]);
+  });
+
   beforeEach(() => {
     jest.clearAllMocks();
     getCart.mockResolvedValue(cartData);

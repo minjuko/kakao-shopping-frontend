@@ -65,12 +65,19 @@ const CartList = () => {
       queryClient.setQueryData(queryKeys.cart, optimisticCart);
       setCartItems(optimisticCart?.products ?? []);
 
-      return { previousCart };
+      return { previousCart, update };
     },
     onError: (error, _updates, context) => {
-      if (context?.previousCart) {
-        queryClient.setQueryData(queryKeys.cart, context.previousCart);
-        setCartItems(context.previousCart.products ?? []);
+      if (context?.previousCart && context.update) {
+        const previousItem = context.previousCart.products
+          ?.flatMap((product) => product.carts)
+          .find((cart) => cart.id === context.update.cartId);
+        const currentCart = queryClient.getQueryData(queryKeys.cart);
+        const rolledBackCart = previousItem
+          ? updateCartDataQuantity(currentCart, context.update.cartId, previousItem.quantity)
+          : currentCart;
+        queryClient.setQueryData(queryKeys.cart, rolledBackCart);
+        setCartItems(rolledBackCart?.products ?? []);
       }
 
       handleApiError(
@@ -79,10 +86,17 @@ const CartList = () => {
         setFeedbackMessage
       );
     },
-    onSuccess: (updatedCart) => {
+    onSuccess: (updatedCart, [update]) => {
       if (updatedCart?.products) {
-        queryClient.setQueryData(queryKeys.cart, updatedCart);
-        setCartItems(updatedCart.products);
+        const updatedItem = updatedCart.products
+          .flatMap((product) => product.carts)
+          .find((cart) => cart.id === update.cartId);
+        const currentCart = queryClient.getQueryData(queryKeys.cart);
+        const mergedCart = updatedItem
+          ? updateCartDataQuantity(currentCart, update.cartId, updatedItem.quantity)
+          : currentCart;
+        queryClient.setQueryData(queryKeys.cart, mergedCart);
+        setCartItems(mergedCart?.products ?? []);
       }
     },
     onSettled: (_data, _error, [update]) => {
